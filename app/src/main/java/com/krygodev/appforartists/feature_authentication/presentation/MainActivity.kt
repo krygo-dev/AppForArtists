@@ -1,4 +1,4 @@
-package com.krygodev.appforartists
+package com.krygodev.appforartists.feature_authentication.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
