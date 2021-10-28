@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1078337141430",
+    "project_id": "appforartists",
+    "storage_bucket": "appforartists.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1078337141430:android:b5eb435f1c227e77748417",
+        "android_client_info": {
+          "package_name": "com.krygodev.appforartists"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1078337141430-8ihdmut120s3hkr7mc0mcd4k4o9gqrn3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOlQnuhKGygRnFitGPdxAY4C0CJWvIleM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1078337141430-8ihdmut120s3hkr7mc0mcd4k4o9gqrn3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
