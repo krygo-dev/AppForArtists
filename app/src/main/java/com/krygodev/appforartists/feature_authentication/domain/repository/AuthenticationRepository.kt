@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthenticationRepository {
 
-    fun singInWithEmailAndPass(email: String, password: String) : Flow<AuthenticationState<Any>>
+    fun signInWithEmailAndPass(email: String, password: String) : Flow<AuthenticationState<Any>>
 
     fun signInWithGoogle(googleAuthCredential: GoogleAuthCredential) : Flow<AuthenticationState<Any>>
 

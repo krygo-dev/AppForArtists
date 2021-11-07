@@ -1,8 +1,16 @@
 package com.krygodev.appforartists.feature_authentication.data.repository
 
+import android.app.Activity
+import android.content.Context
+import android.provider.Settings.Global.getString
+import androidx.compose.ui.platform.LocalContext
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthCredential
 import com.google.firebase.firestore.FirebaseFirestore
+import com.krygodev.appforartists.R
 import com.krygodev.appforartists.core.domain.model.User
 import com.krygodev.appforartists.core.domain.util.Constants
 import com.krygodev.appforartists.feature_authentication.domain.repository.AuthenticationRepository
@@ -14,7 +22,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
+import java.security.AccessController.getContext
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 
 @ExperimentalCoroutinesApi
@@ -27,7 +37,7 @@ class AuthenticationRepositoryImpl @Inject constructor(
     //private val _firebaseFirestore = FirebaseFirestore.getInstance()
 
 
-    override fun singInWithEmailAndPass(
+    override fun signInWithEmailAndPass(
         email: String,
         password: String
     ): Flow<AuthenticationState<Any>> =
