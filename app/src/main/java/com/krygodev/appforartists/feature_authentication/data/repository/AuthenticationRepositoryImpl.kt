@@ -9,11 +9,10 @@ import com.krygodev.appforartists.core.domain.util.Constants
 import com.krygodev.appforartists.feature_authentication.domain.repository.AuthenticationRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.tasks.await
-import javax.inject.Inject
 
 
 @ExperimentalCoroutinesApi
-class AuthenticationRepositoryImpl @Inject constructor(
+class AuthenticationRepositoryImpl(
     private val _firebaseAuth: FirebaseAuth,
     private val _firebaseFirestore: FirebaseFirestore
 ) : AuthenticationRepository {
@@ -28,7 +27,7 @@ class AuthenticationRepositoryImpl @Inject constructor(
 
 
     override suspend fun signInWithGoogle(googleAuthCredential: GoogleAuthCredential): AuthResult {
-        TODO("Not yet implemented")
+        TODO("Not implemented yet.")
     }
 
 
