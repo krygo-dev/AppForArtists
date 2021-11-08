@@ -1,4 +1,4 @@
-package com.krygodev.appforartists.feature_authentication.presentation.login
+package com.krygodev.appforartists.feature_authentication.presentation.register
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -13,21 +13,21 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class RegisterViewModel @Inject constructor(
     private val _authenticationUseCases: AuthenticationUseCases
 ): ViewModel() {
 
     private val _state = mutableStateOf(AuthenticationState())
     val state: State<AuthenticationState> = _state
 
-    fun signInWithEmailAndPass(email: String, password: String) {
-        _authenticationUseCases.signInWithEmailAndPassword(email, password).onEach { result ->
+    fun signUpWithEmailAndPass(email: String, password: String, repeatPassword: String) {
+        _authenticationUseCases.signUpWithEmailAndPassword(email, password, repeatPassword).onEach { result ->
             when(result) {
                 is Resource.Success<*> -> {
                     _state.value = AuthenticationState(result = result.data)
                 }
                 is Resource.Error<*> -> {
-                    _state.value = AuthenticationState(error = result.message ?: "An unexpected error occurred.")
+                    _state.value = AuthenticationState(error = result.message ?: "Wystąpił niespodziewany błąd.")
                 }
                 is Resource.Loading<*> -> {
                     _state.value = AuthenticationState(isLoading = true)
@@ -35,19 +35,4 @@ class LoginViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
-
-
-    /** fun signInWithEmailAndPass(email: String, password: String) {
-        when(val result = _authenticationUseCases.signInWithEmailAndPassword(email, password)) {
-            is Resource.Success<*> -> {
-                _state.value = AuthenticationState(result = result.data as AuthResult?)
-            }
-            is Resource.Error<*> -> {
-                _state.value = AuthenticationState(error = result.message ?: "An unexpected error occurred.")
-            }
-            is Resource.Loading<*> -> {
-                _state.value = AuthenticationState(isLoading = true)
-            }
-        }
-    } **/
 }

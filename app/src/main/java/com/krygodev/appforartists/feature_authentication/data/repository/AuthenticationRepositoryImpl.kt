@@ -1,6 +1,5 @@
 package com.krygodev.appforartists.feature_authentication.data.repository
 
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthCredential
@@ -23,28 +22,32 @@ class AuthenticationRepositoryImpl @Inject constructor(
     //private val _firebaseFirestore = FirebaseFirestore.getInstance()
 
 
-    override suspend fun signInWithEmailAndPass(email: String, password: String): Task<AuthResult> {
-        return _firebaseAuth.signInWithEmailAndPassword(email, password)
+    override suspend fun signInWithEmailAndPass(email: String, password: String): AuthResult {
+        return _firebaseAuth.signInWithEmailAndPassword(email, password).await()
     }
 
 
-    override suspend fun signInWithGoogle(googleAuthCredential: GoogleAuthCredential) {
+    override suspend fun signInWithGoogle(googleAuthCredential: GoogleAuthCredential): AuthResult {
         TODO("Not yet implemented")
     }
 
 
-    override suspend fun signUpWithEmailAndPass(email: String, password: String) {
-        TODO("Not yet implemented")
+    override suspend fun signUpWithEmailAndPass(email: String, password: String): AuthResult {
+        return _firebaseAuth.createUserWithEmailAndPassword(email, password).await().also { result ->
+            val newUser = User(result.user?.uid, result.user?.email)
+            addNewUserToFirestore(newUser)
+            _firebaseAuth.currentUser?.sendEmailVerification()?.await()
+        }
     }
 
 
-    override suspend fun resetAccountPassword(email: String) {
-        TODO("Not yet implemented")
+    override suspend fun resetAccountPassword(email: String): Void? {
+        return _firebaseAuth.sendPasswordResetEmail(email).await()
     }
 
 
     override suspend fun signOut() {
-        TODO("Not yet implemented")
+        return _firebaseAuth.signOut()
     }
 
 
