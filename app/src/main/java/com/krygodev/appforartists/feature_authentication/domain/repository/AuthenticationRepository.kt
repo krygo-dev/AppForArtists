@@ -1,18 +1,18 @@
 package com.krygodev.appforartists.feature_authentication.domain.repository
 
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.GoogleAuthCredential
-import com.krygodev.appforartists.feature_authentication.presentation.util.AuthenticationState
-import kotlinx.coroutines.flow.Flow
 
 interface AuthenticationRepository {
 
-    fun signInWithEmailAndPass(email: String, password: String) : Flow<AuthenticationState<Any>>
+    suspend fun signInWithEmailAndPass(email: String, password: String) : Task<AuthResult>
 
-    fun signInWithGoogle(googleAuthCredential: GoogleAuthCredential) : Flow<AuthenticationState<Any>>
+    suspend fun signInWithGoogle(googleAuthCredential: GoogleAuthCredential)
 
-    fun signUpWithEmailAndPass(email: String, password: String) : Flow<AuthenticationState<Any>>
+    suspend fun signUpWithEmailAndPass(email: String, password: String)
 
-    fun resetAccountPassword(email: String) : Flow<AuthenticationState<Any>>
+    suspend fun resetAccountPassword(email: String)
 
-    fun signOut() : Flow<AuthenticationState<Any>>
+    suspend fun signOut()
 }
