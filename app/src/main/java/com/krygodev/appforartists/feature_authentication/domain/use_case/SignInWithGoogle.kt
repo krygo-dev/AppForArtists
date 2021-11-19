@@ -13,7 +13,7 @@ class SignInWithGoogle(
     private val _repository: AuthenticationRepository
 ) {
 
-    operator fun invoke(googleAuthCredential: GoogleAuthCredential): Flow<Resource<AuthResult>> = flow {
-        TODO("Not implemented yet.")
+    operator fun invoke(googleAuthCredential: GoogleAuthCredential): Flow<Resource<AuthResult>> {
+        TODO()
     }
 }

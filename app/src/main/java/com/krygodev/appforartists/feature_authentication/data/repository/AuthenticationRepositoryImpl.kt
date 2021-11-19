@@ -2,13 +2,19 @@ package com.krygodev.appforartists.feature_authentication.data.repository
 
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.GoogleAuthCredential
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
 import com.google.firebase.firestore.FirebaseFirestore
 import com.krygodev.appforartists.core.domain.model.User
 import com.krygodev.appforartists.core.domain.util.Constants
+import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.feature_authentication.domain.repository.AuthenticationRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import java.io.IOException
 
 
 @ExperimentalCoroutinesApi
@@ -17,36 +23,69 @@ class AuthenticationRepositoryImpl(
     private val _firebaseFirestore: FirebaseFirestore
 ) : AuthenticationRepository {
 
-    //private val _firebaseAuth = FirebaseAuth.getInstance()
-    //private val _firebaseFirestore = FirebaseFirestore.getInstance()
+    override fun signInWithEmailAndPass(
+        email: String,
+        password: String
+    ): Flow<Resource<AuthResult>> = flow {
+        emit(Resource.Loading())
 
-
-    override suspend fun signInWithEmailAndPass(email: String, password: String): AuthResult {
-        return _firebaseAuth.signInWithEmailAndPassword(email, password).await()
-    }
-
-
-    override suspend fun signInWithGoogle(googleAuthCredential: GoogleAuthCredential): AuthResult {
-        TODO("Not implemented yet.")
-    }
-
-
-    override suspend fun signUpWithEmailAndPass(email: String, password: String): AuthResult {
-        return _firebaseAuth.createUserWithEmailAndPassword(email, password).await().also { result ->
-            val newUser = User(result.user?.uid, result.user?.email)
-            addNewUserToFirestore(newUser)
-            _firebaseAuth.currentUser?.sendEmailVerification()?.await()
+        try {
+            val result = _firebaseAuth.signInWithEmailAndPassword(email, password).await()
+            emit(Resource.Success(result))
+        } catch (e: HttpException) {
+            emit(Resource.Error(message = "Coś poszło nie tak!"))
+        } catch (e: IOException) {
+            emit(Resource.Error(message = "Nie udało się połączyć z serwerem, sprawdź połączenie z internetem"))
+        } catch (e: FirebaseAuthException) {
+            emit(Resource.Error(message = e.localizedMessage!!))
         }
     }
 
 
-    override suspend fun resetAccountPassword(email: String): Void? {
-        return _firebaseAuth.sendPasswordResetEmail(email).await()
+    override fun signInWithGoogle(googleAuthCredential: GoogleAuthCredential): Flow<Resource<AuthResult>> {
+        TODO("Not implemented yet.")
     }
 
 
-    override suspend fun signOut() {
-        return _firebaseAuth.signOut()
+    override fun signUpWithEmailAndPass(
+        email: String,
+        password: String
+    ): Flow<Resource<AuthResult>> = flow {
+        emit(Resource.Loading())
+
+        try {
+            val result = _firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+
+            result.user?.let { user ->
+                val newUser = User(uid = user.uid, email = user.email)
+                addNewUserToFirestore(newUser)
+                user.sendEmailVerification()
+            }
+
+            emit(Resource.Success(result))
+        } catch (e: HttpException) {
+            emit(Resource.Error(message = "Coś poszło nie tak!"))
+        } catch (e: IOException) {
+            emit(Resource.Error(message = "Nie udało się połączyć z serwerem, sprawdź połączenie z internetem"))
+        } catch (e: FirebaseAuthException) {
+            emit(Resource.Error(message = e.localizedMessage!!))
+        }
+    }
+
+
+    override fun resetAccountPassword(email: String): Flow<Resource<Void>> = flow {
+        emit(Resource.Loading())
+
+        try {
+            val result = _firebaseAuth.sendPasswordResetEmail(email).await()
+            emit(Resource.Success(result))
+        } catch (e: HttpException) {
+            emit(Resource.Error(message = "Coś poszło nie tak!"))
+        } catch (e: IOException) {
+            emit(Resource.Error(message = "Nie udało się połączyć z serwerem, sprawdź połączenie z internetem"))
+        } catch (e: FirebaseAuthException) {
+            emit(Resource.Error(message = e.localizedMessage!!))
+        }
     }
 
 

@@ -45,8 +45,7 @@ object AppModule {
             signInWithEmailAndPassword = SignInWithEmailAndPassword(repository),
             signInWithGoogle = SignInWithGoogle(repository),
             signUpWithEmailAndPassword = SignUpWithEmailAndPassword(repository),
-            resetAccountPassword = ResetAccountPassword(repository),
-            signOut = SignOut(repository)
+            resetAccountPassword = ResetAccountPassword(repository)
         )
     }
 }

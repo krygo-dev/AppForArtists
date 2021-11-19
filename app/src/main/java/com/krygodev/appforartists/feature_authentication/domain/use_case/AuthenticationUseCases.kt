@@ -4,6 +4,5 @@ data class AuthenticationUseCases(
     val signInWithEmailAndPassword: SignInWithEmailAndPassword,
     val signInWithGoogle: SignInWithGoogle,
     val signUpWithEmailAndPassword: SignUpWithEmailAndPassword,
-    val resetAccountPassword: ResetAccountPassword,
-    val signOut: SignOut
+    val resetAccountPassword: ResetAccountPassword
 )

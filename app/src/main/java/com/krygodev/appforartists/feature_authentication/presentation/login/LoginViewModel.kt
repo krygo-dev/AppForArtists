@@ -5,49 +5,74 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.krygodev.appforartists.core.domain.util.Resource
+import com.krygodev.appforartists.core.domain.util.UIEvent
 import com.krygodev.appforartists.feature_authentication.domain.use_case.AuthenticationUseCases
 import com.krygodev.appforartists.feature_authentication.presentation.util.AuthenticationState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val _authenticationUseCases: AuthenticationUseCases
-): ViewModel() {
+) : ViewModel() {
 
     private val _state = mutableStateOf(AuthenticationState())
     val state: State<AuthenticationState> = _state
 
-    fun signInWithEmailAndPass(email: String, password: String) {
-        _authenticationUseCases.signInWithEmailAndPassword(email, password).onEach { result ->
-            when(result) {
-                is Resource.Success<*> -> {
-                    _state.value = AuthenticationState(result = result.data)
-                }
-                is Resource.Error<*> -> {
-                    _state.value = AuthenticationState(error = result.message ?: "An unexpected error occurred.")
-                }
-                is Resource.Loading<*> -> {
-                    _state.value = AuthenticationState(isLoading = true)
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
+    private val _email = mutableStateOf("")
+    val email: State<String> = _email
 
+    private val _password = mutableStateOf("")
+    val password: State<String> = _password
 
-    /** fun signInWithEmailAndPass(email: String, password: String) {
-        when(val result = _authenticationUseCases.signInWithEmailAndPassword(email, password)) {
-            is Resource.Success<*> -> {
-                _state.value = AuthenticationState(result = result.data as AuthResult?)
+    private val _eventFlow = MutableSharedFlow<UIEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
+
+    fun onEvent(event: LoginEvent) {
+        when (event) {
+            is LoginEvent.EnteredEmail -> {
+                _email.value = event.value
             }
-            is Resource.Error<*> -> {
-                _state.value = AuthenticationState(error = result.message ?: "An unexpected error occurred.")
+            is LoginEvent.EnteredPassword -> {
+                _password.value = event.value
             }
-            is Resource.Loading<*> -> {
-                _state.value = AuthenticationState(isLoading = true)
+            is LoginEvent.SignIn -> {
+                viewModelScope.launch {
+                    _authenticationUseCases.signInWithEmailAndPassword(
+                        email = email.value,
+                        password = password.value
+                    ).onEach { result ->
+                        when (result) {
+                            is Resource.Loading -> {
+                                _state.value = state.value.copy(
+                                    isLoading = true,
+                                    error = "",
+                                    result = result.data
+                                )
+                            }
+                            is Resource.Success -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = "",
+                                    result = result.data
+                                )
+                            }
+                            is Resource.Error -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = result.message!!,
+                                    result = result.data
+                                )
+                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                            }
+                        }
+                    }
+                }
             }
         }
-    } **/
+    }
 }

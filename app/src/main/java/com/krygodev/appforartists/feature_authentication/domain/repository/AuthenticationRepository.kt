@@ -2,16 +2,16 @@ package com.krygodev.appforartists.feature_authentication.domain.repository
 
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.GoogleAuthCredential
+import com.krygodev.appforartists.core.domain.util.Resource
+import kotlinx.coroutines.flow.Flow
 
 interface AuthenticationRepository {
 
-    suspend fun signInWithEmailAndPass(email: String, password: String): AuthResult
+    fun signInWithEmailAndPass(email: String, password: String): Flow<Resource<AuthResult>>
 
-    suspend fun signInWithGoogle(googleAuthCredential: GoogleAuthCredential): AuthResult
+    fun signInWithGoogle(googleAuthCredential: GoogleAuthCredential): Flow<Resource<AuthResult>>
 
-    suspend fun signUpWithEmailAndPass(email: String, password: String): AuthResult
+    fun signUpWithEmailAndPass(email: String, password: String): Flow<Resource<AuthResult>>
 
-    suspend fun resetAccountPassword(email: String): Void?
-
-    suspend fun signOut()
+    fun resetAccountPassword(email: String): Flow<Resource<Void>>
 }
