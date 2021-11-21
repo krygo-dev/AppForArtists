@@ -1,6 +1,6 @@
-package com.krygodev.appforartists.feature_authentication.presentation.login
+package com.krygodev.appforartists.feature_authentication.presentation.register
 
-import androidx.compose.foundation.clickable
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -13,13 +13,14 @@ import com.krygodev.appforartists.core.domain.util.UIEvent
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun LoginScreen(
+fun RegistrationScreen(
     navController: NavController,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: RegistrationViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
     val emailState = viewModel.email.value
     val passwordState = viewModel.password.value
+    val repeatPasswordState = viewModel.repeatPassword.value
     val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(key1 = true) {
@@ -43,28 +44,29 @@ fun LoginScreen(
             Text(text = "Wprowadź adres email oraz hasło.")
             OutlinedTextField(
                 value = emailState,
-                onValueChange = { viewModel.onEvent(LoginEvent.EnteredEmail(it)) },
-                label = { Text(text = "Email") }
+                onValueChange = { viewModel.onEvent(RegistrationEvent.EnteredEmail(it)) },
+                label = { Text(text = "Email") },
+                singleLine = true
             )
             OutlinedTextField(
                 value = passwordState,
-                onValueChange = { viewModel.onEvent(LoginEvent.EnteredPassword(it)) },
-                label = { Text(text = "Hasło") }
+                onValueChange = { viewModel.onEvent(RegistrationEvent.EnteredPassword(it)) },
+                label = { Text(text = "Hasło") },
+                singleLine = true
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Przypomnij hasło",
-                modifier = Modifier.clickable {
-                    viewModel.onEvent(LoginEvent.ResetPassword)
-                }
+            OutlinedTextField(
+                value = repeatPasswordState,
+                onValueChange = { viewModel.onEvent(RegistrationEvent.EnteredRepeatPassword(it)) },
+                label = { Text(text = "Powtórz hasło") },
+                singleLine = true
             )
             Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = {
-                    viewModel.onEvent(LoginEvent.SignIn)
+                    viewModel.onEvent(RegistrationEvent.SignUp)
                 }
             ) {
-                Text(text = "Zaloguj")
+                Text(text = "Zarejestruj")
             }
         }
     }
