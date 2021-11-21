@@ -1,4 +1,4 @@
-package com.krygodev.appforartists.feature_authentication.presentation.reset_password
+package com.krygodev.appforartists.feature_authentication.presentation.util
 
 data class ResetPasswordState(
     val isLoading: Boolean = false,

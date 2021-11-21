@@ -10,14 +10,12 @@ import com.krygodev.appforartists.core.domain.model.User
 import com.krygodev.appforartists.core.domain.util.Constants
 import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.feature_authentication.domain.repository.AuthenticationRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import java.io.IOException
 
 
-@ExperimentalCoroutinesApi
 class AuthenticationRepositoryImpl(
     private val _firebaseAuth: FirebaseAuth,
     private val _firebaseFirestore: FirebaseFirestore

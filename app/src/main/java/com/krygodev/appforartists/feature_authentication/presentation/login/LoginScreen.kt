@@ -1,8 +1,7 @@
 package com.krygodev.appforartists.feature_authentication.presentation.login
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,6 +11,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.krygodev.appforartists.core.domain.util.UIEvent
 import kotlinx.coroutines.flow.collectLatest
+
 
 @Composable
 fun LoginScreen(
@@ -51,12 +51,20 @@ fun LoginScreen(
                 onValueChange = { viewModel.onEvent(LoginEvent.EnteredPassword(it)) },
                 placeholder = { Text(text = "Hasło") }
             )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Przypomnij hasło",
+                modifier = Modifier.clickable {
+                    viewModel.onEvent(LoginEvent.ResetPassword)
+                }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = {
                     viewModel.onEvent(LoginEvent.SignIn)
                 }
             ) {
-                Text(text = "Sign In")
+                Text(text = "Zaloguj")
             }
         }
     }

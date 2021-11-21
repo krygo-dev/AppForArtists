@@ -11,6 +11,7 @@ import com.krygodev.appforartists.feature_authentication.presentation.util.Authe
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -60,6 +61,7 @@ class LoginViewModel @Inject constructor(
                                     error = "",
                                     result = result.data
                                 )
+                                _eventFlow.emit(UIEvent.ShowSnackbar("Zalogowano!"))
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(
@@ -70,7 +72,39 @@ class LoginViewModel @Inject constructor(
                                 _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
                             }
                         }
-                    }
+                    }.launchIn(this)
+                }
+            }
+            is LoginEvent.ResetPassword -> {
+                viewModelScope.launch {
+                    _authenticationUseCases.resetAccountPassword(email = email.value)
+                        .onEach { result ->
+                            when (result) {
+                                is Resource.Loading -> {
+                                    _state.value = state.value.copy(
+                                        isLoading = true,
+                                        error = "",
+                                        result = result.data
+                                    )
+                                }
+                                is Resource.Success -> {
+                                    _state.value = state.value.copy(
+                                        isLoading = false,
+                                        error = "",
+                                        result = result.data
+                                    )
+                                    _eventFlow.emit(UIEvent.ShowSnackbar("Na podany adres email został wysłany link resetujący hasło!"))
+                                }
+                                is Resource.Error -> {
+                                    _state.value = state.value.copy(
+                                        isLoading = false,
+                                        error = result.message!!,
+                                        result = result.data
+                                    )
+                                    _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                                }
+                            }
+                        }.launchIn(this)
                 }
             }
         }
