@@ -5,9 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.krygodev.appforartists.core.domain.util.Screen
 import com.krygodev.appforartists.feature_authentication.presentation.login.LoginScreen
 import com.krygodev.appforartists.feature_authentication.presentation.register.RegistrationScreen
@@ -22,6 +24,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppForArtistsTheme {
                 Surface(color = MaterialTheme.colors.background) {
+
+                    val systemUIController = rememberSystemUiController()
+                    systemUIController.setSystemBarsColor(color = Color.White)
+
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
