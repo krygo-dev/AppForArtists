@@ -1,6 +1,5 @@
 package com.krygodev.appforartists.feature_authentication.presentation.register
 
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
