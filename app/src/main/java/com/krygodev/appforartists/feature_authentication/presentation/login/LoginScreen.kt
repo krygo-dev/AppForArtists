@@ -1,7 +1,6 @@
 package com.krygodev.appforartists.feature_authentication.presentation.login
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -86,8 +85,6 @@ fun LoginScreen(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    //Text(text = "Wprowadź adres email oraz hasło.", fontSize = 18.sp)
-                    //Spacer(modifier = Modifier.height(5.dp))
                     OutlinedTextField(
                         value = emailState,
                         onValueChange = { viewModel.onEvent(LoginEvent.EnteredEmail(it)) },
@@ -133,7 +130,6 @@ fun LoginScreen(
                     )
                 }
             }
-            //Spacer(modifier = Modifier.height(10.dp))
             OutlinedButton(
                 onClick = {
                     viewModel.onEvent(LoginEvent.SignIn)
@@ -144,17 +140,30 @@ fun LoginScreen(
                     backgroundColor = Color.Black
                 )
             ) {
-                Row(
-                    modifier = Modifier.width(200.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Login,
-                        contentDescription = "Zaloguj się",
-                        modifier = Modifier.size(30.dp)
-                    )
-                    Text(text = "Zaloguj się", fontSize = 20.sp)
+                if (state.isLoading) {
+                    Row(
+                        modifier = Modifier.width(200.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(30.dp),
+                            color = Color.LightGray
+                        )
+                    }
+                } else {
+                    Row(
+                        modifier = Modifier.width(200.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Login,
+                            contentDescription = "Zaloguj się",
+                            modifier = Modifier.size(30.dp)
+                        )
+                        Text(text = "Zaloguj się", fontSize = 20.sp)
+                    }
                 }
             }
         }
