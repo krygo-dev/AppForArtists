@@ -1,4 +1,4 @@
-package com.krygodev.appforartists.core.domain.util
+package com.krygodev.appforartists.core.presentation.util
 
 sealed class UIEvent {
     data class ShowSnackbar(val message: String): UIEvent()

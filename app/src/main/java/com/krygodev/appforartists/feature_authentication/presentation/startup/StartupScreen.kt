@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.krygodev.appforartists.R
-import com.krygodev.appforartists.core.domain.util.Screen
+import com.krygodev.appforartists.core.presentation.util.Screen
 
 @Composable
 fun StartupScreen(

@@ -1,4 +1,4 @@
-package com.krygodev.appforartists.core.domain.util
+package com.krygodev.appforartists.core.presentation.util
 
 sealed class Screen(val route: String) {
     object StartupScreen: Screen("startup_screen")

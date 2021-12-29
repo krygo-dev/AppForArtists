@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.krygodev.appforartists.R
-import com.krygodev.appforartists.core.domain.util.UIEvent
+import com.krygodev.appforartists.core.presentation.util.UIEvent
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable

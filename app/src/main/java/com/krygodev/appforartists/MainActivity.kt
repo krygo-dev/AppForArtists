@@ -14,7 +14,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.auth.FirebaseAuth
-import com.krygodev.appforartists.core.domain.util.Screen
+import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.components.SetupNavGraph
 import com.krygodev.appforartists.ui.theme.AppForArtistsTheme
 import dagger.hilt.android.AndroidEntryPoint

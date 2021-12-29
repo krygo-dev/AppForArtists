@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.krygodev.appforartists.core.domain.util.Resource
-import com.krygodev.appforartists.core.domain.util.Screen
-import com.krygodev.appforartists.core.domain.util.UIEvent
+import com.krygodev.appforartists.core.presentation.util.Screen
+import com.krygodev.appforartists.core.presentation.util.UIEvent
 import com.krygodev.appforartists.feature_authentication.domain.use_case.AuthenticationUseCases
 import com.krygodev.appforartists.feature_authentication.presentation.util.AuthenticationState
 import dagger.hilt.android.lifecycle.HiltViewModel

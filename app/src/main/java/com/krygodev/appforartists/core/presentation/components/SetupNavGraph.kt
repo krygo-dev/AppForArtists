@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.krygodev.appforartists.core.domain.util.Constants
-import com.krygodev.appforartists.core.domain.util.Screen
+import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.feature_authentication.presentation.login.LoginScreen
 import com.krygodev.appforartists.feature_authentication.presentation.register.RegistrationScreen
 import com.krygodev.appforartists.feature_authentication.presentation.startup.StartupScreen

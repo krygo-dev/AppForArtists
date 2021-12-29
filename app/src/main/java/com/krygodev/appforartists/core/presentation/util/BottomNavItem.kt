@@ -7,7 +7,6 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.krygodev.appforartists.core.domain.util.Screen
 
 sealed class BottomNavItem(
     val route: String,

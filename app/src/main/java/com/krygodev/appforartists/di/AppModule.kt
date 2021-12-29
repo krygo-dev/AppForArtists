@@ -2,9 +2,12 @@ package com.krygodev.appforartists.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.krygodev.appforartists.feature_authentication.data.repository.AuthenticationRepositoryImpl
 import com.krygodev.appforartists.feature_authentication.domain.repository.AuthenticationRepository
 import com.krygodev.appforartists.feature_authentication.domain.use_case.*
+import com.krygodev.appforartists.feature_profile.data.repository.ProfileRepositoryImpl
+import com.krygodev.appforartists.feature_profile.domain.repository.ProfileRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,6 +32,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideFirebaseStorage(): FirebaseStorage {
+        return FirebaseStorage.getInstance()
+    }
+
+    @Provides
+    @Singleton
     fun provideAuthenticationRepository(
         firebaseAuth: FirebaseAuth,
         firebaseFirestore: FirebaseFirestore
@@ -46,5 +55,14 @@ object AppModule {
             resetAccountPassword = ResetAccountPassword(repository),
             signOut = SignOut(repository)
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideProfileRepository(
+        firebaseFirestore: FirebaseFirestore,
+        firebaseStorage: FirebaseStorage
+    ): ProfileRepository {
+        return ProfileRepositoryImpl(firebaseFirestore, firebaseStorage)
     }
 }
