@@ -5,10 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.krygodev.appforartists.core.domain.util.Resource
+import com.krygodev.appforartists.core.domain.util.Screen
 import com.krygodev.appforartists.core.domain.util.UIEvent
 import com.krygodev.appforartists.feature_authentication.domain.use_case.AuthenticationUseCases
 import com.krygodev.appforartists.feature_authentication.presentation.util.AuthenticationState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -69,6 +71,8 @@ class RegistrationViewModel @Inject constructor(
                                     result = result.data
                                 )
                                 _eventFlow.emit(UIEvent.ShowSnackbar("Konto utworzone! Potwierdź adres email aby się zalogować."))
+                                delay(1000)
+                                _eventFlow.emit(UIEvent.NavigateTo(Screen.LoginScreen.route))
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(

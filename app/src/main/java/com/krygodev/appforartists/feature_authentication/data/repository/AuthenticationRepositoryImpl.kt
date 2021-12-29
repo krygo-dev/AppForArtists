@@ -29,7 +29,13 @@ class AuthenticationRepositoryImpl(
 
         try {
             val result = _firebaseAuth.signInWithEmailAndPassword(email, password).await()
-            emit(Resource.Success(result))
+
+            if (result.user!!.isEmailVerified) {
+                emit(Resource.Success(result))
+            } else {
+                emit(Resource.Error(message = "Najpierw zweryfikuj swój adres email!"))
+            }
+
         } catch (e: HttpException) {
             emit(Resource.Error(message = "Coś poszło nie tak!"))
         } catch (e: IOException) {
@@ -60,6 +66,8 @@ class AuthenticationRepositoryImpl(
                 user.sendEmailVerification()
             }
 
+            _firebaseAuth.signOut()
+
             emit(Resource.Success(result))
         } catch (e: HttpException) {
             emit(Resource.Error(message = "Coś poszło nie tak!"))
@@ -81,6 +89,21 @@ class AuthenticationRepositoryImpl(
             emit(Resource.Error(message = "Coś poszło nie tak!"))
         } catch (e: IOException) {
             emit(Resource.Error(message = "Nie udało się połączyć z serwerem, sprawdź połączenie z internetem"))
+        } catch (e: FirebaseAuthException) {
+            emit(Resource.Error(message = e.localizedMessage!!))
+        }
+    }
+
+    override fun signOut(): Flow<Resource<Unit>> = flow {
+        emit(Resource.Loading())
+
+        try {
+            val result = _firebaseAuth.signOut()
+            emit(Resource.Success(result))
+        } catch (e: HttpException) {
+            emit(Resource.Error(message = "Something went wrong!"))
+        } catch (e: IOException) {
+            emit(Resource.Error(message = "Couldn't reach server, check your internet connection!"))
         } catch (e: FirebaseAuthException) {
             emit(Resource.Error(message = e.localizedMessage!!))
         }

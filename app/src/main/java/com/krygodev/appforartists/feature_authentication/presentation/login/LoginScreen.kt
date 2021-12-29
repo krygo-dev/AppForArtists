@@ -47,11 +47,17 @@ fun LoginScreen(
                         message = event.message
                     )
                 }
+                is UIEvent.NavigateTo -> {
+                    navController.navigate(route = event.route)
+                }
             }
         }
     }
 
-    Scaffold(scaffoldState = scaffoldState, modifier = Modifier.padding(8.dp)) {
+    Scaffold(
+        scaffoldState = scaffoldState,
+        modifier = Modifier.padding(8.dp)
+    ) {
         OutlinedButton(
             onClick = {
                 navController.popBackStack()

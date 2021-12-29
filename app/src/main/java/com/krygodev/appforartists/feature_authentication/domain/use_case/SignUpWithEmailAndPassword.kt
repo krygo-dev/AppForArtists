@@ -15,9 +15,21 @@ class SignUpWithEmailAndPassword(
         password: String,
         repeatPassword: String
     ): Flow<Resource<AuthResult>> {
-        if (email.isBlank() || password.isBlank() || repeatPassword.isBlank()) {
+        if (email.isBlank()) {
             return flow {
-                emit(Resource.Error(message = "Wypełnij wszystkie pola!"))
+                emit(Resource.Error(message = "Wprowadź adres email!"))
+            }
+        }
+
+        if (password.isBlank()) {
+            return flow {
+                emit(Resource.Error(message = "Wprowadź hasło!"))
+            }
+        }
+
+        if (repeatPassword.isBlank()) {
+            return flow {
+                emit(Resource.Error(message = "Powtórz hasło!"))
             }
         }
 

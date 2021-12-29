@@ -25,6 +25,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val firebaseAuth = FirebaseAuth.getInstance()
+        firebaseAuth.signOut()
 
         setContent {
             AppForArtistsTheme {

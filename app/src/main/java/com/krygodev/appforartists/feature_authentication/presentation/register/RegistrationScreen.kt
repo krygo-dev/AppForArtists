@@ -48,6 +48,9 @@ fun RegistrationScreen(
                         message = event.message
                     )
                 }
+                is UIEvent.NavigateTo -> {
+                    navController.navigate(route = event.route)
+                }
             }
         }
     }

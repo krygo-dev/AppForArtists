@@ -14,4 +14,6 @@ interface AuthenticationRepository {
     fun signUpWithEmailAndPass(email: String, password: String): Flow<Resource<AuthResult>>
 
     fun resetAccountPassword(email: String): Flow<Resource<Void>>
+
+    fun signOut(): Flow<Resource<Unit>>
 }

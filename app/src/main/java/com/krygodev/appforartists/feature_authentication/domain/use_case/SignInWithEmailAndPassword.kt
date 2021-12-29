@@ -11,11 +11,19 @@ class SignInWithEmailAndPassword(
 ) {
 
     operator fun invoke(email: String, password: String): Flow<Resource<AuthResult>> {
-        if (email.isBlank() || password.isBlank()) {
+
+        if (email.isBlank()) {
             return flow {
-                emit(Resource.Error(message = "Wprowadź email i hasło!"))
+                emit(Resource.Error(message = "Wprowadź adres email!"))
             }
         }
+
+        if (password.isBlank()) {
+            return flow {
+                emit(Resource.Error(message = "Wprowadź hasło!"))
+            }
+        }
+
         return _repository.signInWithEmailAndPass(email, password)
     }
 }
