@@ -56,7 +56,7 @@ fun BottomNavBar(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
-                                    imageVector = item.iconSelected,
+                                    imageVector = if (selected) item.iconSelected else item.iconDeselected,
                                     contentDescription = null,
                                     modifier = Modifier.size(27.dp)
                                 )
