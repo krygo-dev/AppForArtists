@@ -8,7 +8,7 @@ import com.krygodev.appforartists.core.domain.util.Screen
 sealed class BottomNavItem(
     val route: String,
     val name: String,
-    val icon: ImageVector
+    val iconSelected: ImageVector
 ) {
     object Home : BottomNavItem(Screen.HomeScreen.route, "Home", Icons.Filled.Home)
     object Search : BottomNavItem(Screen.SearchScreen.route, "Search", Icons.Filled.Search)
