@@ -13,6 +13,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.firebase.auth.FirebaseAuth
+import com.krygodev.appforartists.core.domain.util.Screen
 import com.krygodev.appforartists.core.presentation.components.SetupNavGraph
 import com.krygodev.appforartists.ui.theme.AppForArtistsTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,6 +23,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val firebaseAuth = FirebaseAuth.getInstance()
+
         setContent {
             AppForArtistsTheme {
 
@@ -39,6 +44,10 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     SetupNavGraph(navController = navController)
+
+                    firebaseAuth.currentUser?.let {
+                        navController.navigate(Screen.HomeScreen.route)
+                    }
                 }
             }
         }
