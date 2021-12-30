@@ -4,7 +4,7 @@ data class User(
     val uid: String? = null,
     val email: String? = null,
     val username: String? = null,
-    val image: String? = null,
+    val userPhotoUrl: String? = null,
     val bio: String? = null,
-    val paintings: List<String>? = null
+    val images: List<String>? = null
 )

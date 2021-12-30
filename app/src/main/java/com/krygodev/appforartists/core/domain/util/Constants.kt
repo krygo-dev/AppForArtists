@@ -8,6 +8,7 @@ object Constants {
 
     // Storage bucket
     const val IMAGES_BUCKET = "images"
+    const val USER_PHOTOS_BUCKET = "user_photos"
 
     // Navigation routes
     const val ROOT_GRAPH_ROUTE = "root"

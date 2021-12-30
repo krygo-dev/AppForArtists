@@ -5,10 +5,12 @@ import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpExce
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.storage.FirebaseStorage
-import com.krygodev.appforartists.core.domain.model.Painting
+import com.google.firebase.storage.StorageException
+import com.krygodev.appforartists.core.domain.model.Image
 import com.krygodev.appforartists.core.domain.model.User
 import com.krygodev.appforartists.core.domain.util.Constants
 import com.krygodev.appforartists.core.domain.util.Resource
+import com.krygodev.appforartists.core.domain.util.serializeToMap
 import com.krygodev.appforartists.feature_profile.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -42,15 +44,15 @@ class ProfileRepositoryImpl(
         }
     }
 
-    override fun getUserPaintings(user: User): Flow<Resource<List<Painting>>> = flow {
+    override fun getUserImages(user: User): Flow<Resource<List<Image>>> = flow {
         emit(Resource.Loading())
 
         try {
             val result = _firebaseFirestore.collection(Constants.IMAGES_COLLECTION)
-                .whereIn("uid", user.paintings!!)
+                .whereIn("uid", user.images!!)
                 .get()
                 .await()
-                .toObjects(Painting::class.java)
+                .toObjects(Image::class.java)
 
             emit(Resource.Success(result))
 
@@ -67,6 +69,13 @@ class ProfileRepositoryImpl(
         emit(Resource.Loading())
 
         try {
+            val result =
+                _firebaseFirestore.collection(Constants.USER_COLLECTION)
+                    .document(user.uid!!)
+                    .update(user.serializeToMap())
+                    .await()
+
+            emit(Resource.Success(result))
 
         } catch (e: HttpException) {
             emit(Resource.Error(message = "Coś poszło nie tak!"))
@@ -77,7 +86,24 @@ class ProfileRepositoryImpl(
         }
     }
 
-    override fun uploadUserPhoto(uid: String, photoUri: Uri): Flow<Resource<Uri>> {
-        TODO("Not yet implemented")
+    override fun uploadUserPhoto(uid: String, photoUri: Uri): Flow<Resource<Uri>> = flow {
+        emit(Resource.Loading())
+
+        try {
+            val result = _firebaseStorage.getReference(Constants.USER_PHOTOS_BUCKET)
+                .child("$uid.jpg")
+                .putFile(photoUri)
+                .await()
+                .storage.downloadUrl.await()
+
+            emit(Resource.Success(result))
+
+        } catch (e: HttpException) {
+            emit(Resource.Error(message = "Something went wrong!"))
+        } catch (e: IOException) {
+            emit(Resource.Error(message = "Couldn't reach server, check your internet connection!"))
+        } catch (e: StorageException) {
+            emit(Resource.Error(message = e.localizedMessage!!))
+        }
     }
 }
