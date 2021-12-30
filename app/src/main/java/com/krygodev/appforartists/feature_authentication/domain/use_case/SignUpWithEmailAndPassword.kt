@@ -13,7 +13,8 @@ class SignUpWithEmailAndPassword(
     operator fun invoke(
         email: String,
         password: String,
-        repeatPassword: String
+        repeatPassword: String,
+        username: String
     ): Flow<Resource<AuthResult>> {
         if (email.isBlank()) {
             return flow {
@@ -33,12 +34,18 @@ class SignUpWithEmailAndPassword(
             }
         }
 
+        if (username.isBlank()) {
+            return flow {
+                emit(Resource.Error(message = "Wprowadź nazwę użytkownika!"))
+            }
+        }
+
         if (password != repeatPassword) {
             return flow {
                 emit(Resource.Error(message = "Hasła nie są takie same!"))
             }
         }
 
-        return _repository.signUpWithEmailAndPass(email, password)
+        return _repository.signUpWithEmailAndPass(email, password, username)
     }
 }

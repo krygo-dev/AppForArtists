@@ -11,7 +11,7 @@ interface AuthenticationRepository {
 
     fun signInWithGoogle(googleAuthCredential: GoogleAuthCredential): Flow<Resource<AuthResult>>
 
-    fun signUpWithEmailAndPass(email: String, password: String): Flow<Resource<AuthResult>>
+    fun signUpWithEmailAndPass(email: String, password: String, username: String): Flow<Resource<AuthResult>>
 
     fun resetAccountPassword(email: String): Flow<Resource<Void>>
 

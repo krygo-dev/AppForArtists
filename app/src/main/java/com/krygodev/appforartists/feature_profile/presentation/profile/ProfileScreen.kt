@@ -1,8 +1,6 @@
 package com.krygodev.appforartists.feature_profile.presentation.profile
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -24,8 +22,8 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
-    val user = viewModel.user.value
-    val userImages = viewModel.userImages.value
+    val userState = viewModel.user.value
+    val userImagesState = viewModel.userImages.value
     val scaffoldState = rememberScaffoldState()
 
 
@@ -49,9 +47,9 @@ fun ProfileScreen(
         modifier = Modifier.padding(horizontal = 8.dp),
         bottomBar = { SetupBottomNavBar(navController = navController) }
     ) {
-        Box(
+        Column(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = "Profile Screen")
             Button(onClick = { viewModel.onEvent(ProfileEvent.SignOut) }) {

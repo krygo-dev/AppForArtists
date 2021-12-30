@@ -35,6 +35,9 @@ class RegistrationViewModel @Inject constructor(
     private val _repeatPassword = mutableStateOf("")
     val repeatPassword: State<String> = _repeatPassword
 
+    private val _username = mutableStateOf("")
+    val username: State<String> = _username
+
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
@@ -49,12 +52,16 @@ class RegistrationViewModel @Inject constructor(
             is RegistrationEvent.EnteredRepeatPassword -> {
                 _repeatPassword.value = event.value
             }
+            is RegistrationEvent.EnteredUsername -> {
+                _username.value = event.value
+            }
             is RegistrationEvent.SignUp -> {
                 viewModelScope.launch {
                     _authenticationUseCases.signUpWithEmailAndPassword(
                         email = email.value,
                         password = password.value,
-                        repeatPassword = repeatPassword.value
+                        repeatPassword = repeatPassword.value,
+                        username = username.value
                     ).onEach { result ->
                         when (result) {
                             is Resource.Loading -> {

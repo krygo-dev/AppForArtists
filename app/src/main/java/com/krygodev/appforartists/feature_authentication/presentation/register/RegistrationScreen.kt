@@ -36,6 +36,7 @@ fun RegistrationScreen(
     val emailState = viewModel.email.value
     val passwordState = viewModel.password.value
     val repeatPasswordState = viewModel.repeatPassword.value
+    val usernameState = viewModel.username.value
     val scaffoldState = rememberScaffoldState()
     var passwordVisibility by remember { mutableStateOf(false) }
     var repeatPasswordVisibility by remember { mutableStateOf(false) }
@@ -89,6 +90,17 @@ fun RegistrationScreen(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    OutlinedTextField(
+                        value = usernameState,
+                        onValueChange = { viewModel.onEvent(RegistrationEvent.EnteredUsername(it)) },
+                        label = { Text(text = "Nazwa użytkownika") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color.Black,
+                            focusedLabelColor = Color.Black,
+                            cursorColor = Color.Black
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = emailState,
                         onValueChange = { viewModel.onEvent(RegistrationEvent.EnteredEmail(it)) },

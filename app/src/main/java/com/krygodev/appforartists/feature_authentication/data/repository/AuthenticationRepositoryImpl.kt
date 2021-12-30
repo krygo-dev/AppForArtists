@@ -53,7 +53,8 @@ class AuthenticationRepositoryImpl(
 
     override fun signUpWithEmailAndPass(
         email: String,
-        password: String
+        password: String,
+        username: String
     ): Flow<Resource<AuthResult>> = flow {
         emit(Resource.Loading())
 
@@ -61,7 +62,7 @@ class AuthenticationRepositoryImpl(
             val result = _firebaseAuth.createUserWithEmailAndPassword(email, password).await()
 
             result.user?.let { user ->
-                val newUser = User(uid = user.uid, email = user.email)
+                val newUser = User(uid = user.uid, email = user.email, username = username)
                 addNewUserToFirestore(newUser)
                 user.sendEmailVerification()
             }
