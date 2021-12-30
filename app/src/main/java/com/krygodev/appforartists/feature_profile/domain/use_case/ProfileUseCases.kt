@@ -1,0 +1,8 @@
+package com.krygodev.appforartists.feature_profile.domain.use_case
+
+data class ProfileUseCases(
+    val getUserData: GetUserData,
+    val getUserImages: GetUserImages,
+    val setOrUpdateUserData: SetOrUpdateUserData,
+    val uploadUserPhoto: UploadUserPhoto
+)

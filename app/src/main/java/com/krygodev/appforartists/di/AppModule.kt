@@ -8,6 +8,7 @@ import com.krygodev.appforartists.feature_authentication.domain.repository.Authe
 import com.krygodev.appforartists.feature_authentication.domain.use_case.*
 import com.krygodev.appforartists.feature_profile.data.repository.ProfileRepositoryImpl
 import com.krygodev.appforartists.feature_profile.domain.repository.ProfileRepository
+import com.krygodev.appforartists.feature_profile.domain.use_case.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -64,5 +65,16 @@ object AppModule {
         firebaseStorage: FirebaseStorage
     ): ProfileRepository {
         return ProfileRepositoryImpl(firebaseFirestore, firebaseStorage)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProfileUseCases(repository: ProfileRepository): ProfileUseCases {
+        return ProfileUseCases(
+            getUserData = GetUserData(repository),
+            getUserImages = GetUserImages(repository),
+            setOrUpdateUserData = SetOrUpdateUserData(repository),
+            uploadUserPhoto = UploadUserPhoto(repository)
+        )
     }
 }
