@@ -12,4 +12,5 @@ class GetUserData(
     operator fun invoke(uid: String): Flow<Resource<User>> {
         return _repository.getUserData(uid = uid)
     }
+
 }

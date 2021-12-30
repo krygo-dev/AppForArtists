@@ -8,7 +8,7 @@ import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
 import com.krygodev.appforartists.feature_authentication.domain.use_case.AuthenticationUseCases
-import com.krygodev.appforartists.feature_authentication.presentation.util.AuthenticationState
+import com.krygodev.appforartists.core.presentation.util.LoadingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,8 +23,8 @@ class LoginViewModel @Inject constructor(
     private val _authenticationUseCases: AuthenticationUseCases
 ) : ViewModel() {
 
-    private val _state = mutableStateOf(AuthenticationState())
-    val state: State<AuthenticationState> = _state
+    private val _state = mutableStateOf(LoadingState())
+    val state: State<LoadingState> = _state
 
     private val _email = mutableStateOf("")
     val email: State<String> = _email

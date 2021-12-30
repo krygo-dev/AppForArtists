@@ -4,5 +4,6 @@ data class ProfileUseCases(
     val getUserData: GetUserData,
     val getUserImages: GetUserImages,
     val setOrUpdateUserData: SetOrUpdateUserData,
-    val uploadUserPhoto: UploadUserPhoto
+    val uploadUserPhoto: UploadUserPhoto,
+    val getCurrentUser: GetCurrentUser
 )

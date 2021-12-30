@@ -1,6 +1,8 @@
 package com.krygodev.appforartists.feature_profile.data.repository
 
 import android.net.Uri
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -18,6 +20,7 @@ import kotlinx.coroutines.tasks.await
 import java.io.IOException
 
 class ProfileRepositoryImpl(
+    private val _firebaseAuth: FirebaseAuth,
     private val _firebaseFirestore: FirebaseFirestore,
     private val _firebaseStorage: FirebaseStorage
 ) : ProfileRepository {
@@ -105,5 +108,9 @@ class ProfileRepositoryImpl(
         } catch (e: StorageException) {
             emit(Resource.Error(message = e.localizedMessage!!))
         }
+    }
+
+    override fun getCurrentUser(): FirebaseUser? {
+        return _firebaseAuth.currentUser
     }
 }

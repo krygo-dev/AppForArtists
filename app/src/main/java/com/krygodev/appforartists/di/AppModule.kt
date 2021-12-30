@@ -61,10 +61,11 @@ object AppModule {
     @Provides
     @Singleton
     fun provideProfileRepository(
+        firebaseAuth: FirebaseAuth,
         firebaseFirestore: FirebaseFirestore,
         firebaseStorage: FirebaseStorage
     ): ProfileRepository {
-        return ProfileRepositoryImpl(firebaseFirestore, firebaseStorage)
+        return ProfileRepositoryImpl(firebaseAuth, firebaseFirestore, firebaseStorage)
     }
 
     @Provides
@@ -74,7 +75,8 @@ object AppModule {
             getUserData = GetUserData(repository),
             getUserImages = GetUserImages(repository),
             setOrUpdateUserData = SetOrUpdateUserData(repository),
-            uploadUserPhoto = UploadUserPhoto(repository)
+            uploadUserPhoto = UploadUserPhoto(repository),
+            getCurrentUser = GetCurrentUser(repository)
         )
     }
 }
