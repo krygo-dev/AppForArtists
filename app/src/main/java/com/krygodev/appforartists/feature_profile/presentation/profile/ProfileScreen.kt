@@ -11,8 +11,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.ManageAccounts
-import androidx.compose.material.icons.outlined.Mail
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +27,7 @@ import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.krygodev.appforartists.R
 import com.krygodev.appforartists.core.domain.util.Constants
+import com.krygodev.appforartists.core.presentation.components.ImageListItem
 import com.krygodev.appforartists.core.presentation.components.SetupBottomNavBar
 import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
@@ -152,7 +155,9 @@ fun ProfileScreen(
                 item {
                     if (!userState.bio.isNullOrEmpty()) {
                         Row(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp)
                         ) {
                             Text(
                                 text = "${userState.bio}",
@@ -164,7 +169,9 @@ fun ProfileScreen(
                 }
                 item {
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         OutlinedButton(
@@ -192,8 +199,8 @@ fun ProfileScreen(
                         OutlinedButton(
                             onClick = {
                                 selected.value = Constants.USER_FAVORITES
-                                if (userImagesState.isNullOrEmpty()) {
-                                    viewModel.onEvent(ProfileEvent.GetUserImages)
+                                if (userFavoritesState.isNullOrEmpty()) {
+                                    viewModel.onEvent(ProfileEvent.GetUserFavorites)
                                 }
                             },
                             shape = RoundedCornerShape(50.dp),
@@ -215,7 +222,11 @@ fun ProfileScreen(
                 }
                 if (selected.value == Constants.USER_IMAGES) {
                     items(userImagesState) { userImage ->
-
+                        ImageListItem(image = userImage, navController = navController)
+                    }
+                } else {
+                    items(userFavoritesState) { userFavorite ->
+                        ImageListItem(image = userFavorite, navController = navController)
                     }
                 }
             }

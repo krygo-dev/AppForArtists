@@ -65,7 +65,7 @@ fun NavGraphBuilder.homeNavGraph(
         composable(route = Screen.SearchScreen.route) {
             SearchScreen(navController = navController)
         }
-        composable(route = Screen.ImageDetailsScreen.route) {
+        composable(route = Screen.ImageDetailsScreen.route + "/{id}") {
             ImageDetailsScreen(navController = navController)
         }
         composable(route = Screen.AddEditImageScreen.route) {
