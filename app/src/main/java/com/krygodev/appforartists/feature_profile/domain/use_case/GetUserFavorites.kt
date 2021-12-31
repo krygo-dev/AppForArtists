@@ -7,17 +7,17 @@ import com.krygodev.appforartists.feature_profile.domain.repository.ProfileRepos
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class GetUserImages(
+class GetUserFavorites(
     private val _repository: ProfileRepository
 ) {
     operator fun invoke(user: User): Flow<Resource<List<ImageModel>>> {
 
-        if (user.images.isEmpty()) {
+        if (user.favorites.isEmpty()) {
             return flow {
                 emit(Resource.Success(listOf()))
             }
         }
 
-        return _repository.getUserImagesOrFavorites(listOfUid = user.images)
+        return _repository.getUserImagesOrFavorites(listOfUid = user.favorites)
     }
 }

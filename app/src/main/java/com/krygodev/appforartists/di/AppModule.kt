@@ -74,6 +74,7 @@ object AppModule {
         return ProfileUseCases(
             getUserData = GetUserData(repository),
             getUserImages = GetUserImages(repository),
+            getUserFavorites = GetUserFavorites(repository),
             setOrUpdateUserData = SetOrUpdateUserData(repository),
             uploadUserPhoto = UploadUserPhoto(repository),
             getCurrentUser = GetCurrentUser(repository)

@@ -14,4 +14,8 @@ object Constants {
     const val ROOT_GRAPH_ROUTE = "root"
     const val AUTHENTICATION_GRAPH_ROUTE = "authentication"
     const val HOME_GRAPH_ROUTE = "home"
+
+    // Images in profile selections
+    const val USER_IMAGES = "images"
+    const val USER_FAVORITES = "favorites"
 }

@@ -8,7 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageException
-import com.krygodev.appforartists.core.domain.model.Image
+import com.krygodev.appforartists.core.domain.model.ImageModel
 import com.krygodev.appforartists.core.domain.model.User
 import com.krygodev.appforartists.core.domain.util.Constants
 import com.krygodev.appforartists.core.domain.util.Resource
@@ -47,15 +47,15 @@ class ProfileRepositoryImpl(
         }
     }
 
-    override fun getUserImages(user: User): Flow<Resource<List<Image>>> = flow {
+    override fun getUserImagesOrFavorites(listOfUid: List<String>): Flow<Resource<List<ImageModel>>> = flow {
         emit(Resource.Loading())
 
         try {
             val result = _firebaseFirestore.collection(Constants.IMAGES_COLLECTION)
-                .whereIn("uid", listOf(user.images))
+                .whereIn("uid", listOfUid)
                 .get()
                 .await()
-                .toObjects(Image::class.java)
+                .toObjects(ImageModel::class.java)
 
             emit(Resource.Success(result))
 

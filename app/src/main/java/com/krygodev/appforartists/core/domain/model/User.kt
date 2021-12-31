@@ -6,5 +6,6 @@ data class User(
     val username: String? = null,
     val userPhotoUrl: String? = null,
     val bio: String? = null,
-    val images: List<String>? = null
+    val images: List<String> = listOf(),
+    val favorites: List<String> = listOf()
 )
