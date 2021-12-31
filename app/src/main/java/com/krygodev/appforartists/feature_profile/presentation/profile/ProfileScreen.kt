@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.runtime.Composable
@@ -45,7 +46,7 @@ fun ProfileScreen(
     val scaffoldState = rememberScaffoldState()
 
     val selected = remember {
-        mutableStateOf(Constants.USER_IMAGES)
+        mutableStateOf(Constants.SELECT_IMAGES)
     }
 
     LaunchedEffect(key1 = true) {
@@ -66,7 +67,20 @@ fun ProfileScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         modifier = Modifier.padding(horizontal = 8.dp),
-        bottomBar = { SetupBottomNavBar(navController = navController) }
+        bottomBar = { SetupBottomNavBar(navController = navController) },
+        floatingActionButton = {
+            if (selected.value == Constants.SELECT_IMAGES) {
+                FloatingActionButton(
+                    onClick = {
+                        navController.navigate(Screen.AddEditImageScreen.route)
+                    },
+                    backgroundColor = Color.Black,
+                    contentColor = Color.White
+                ) {
+                    Icon(imageVector = Icons.Filled.Add, contentDescription = null)
+                }
+            }
+        }
     ) {
         if (state.isLoading) {
             Box(
@@ -176,7 +190,7 @@ fun ProfileScreen(
                     ) {
                         OutlinedButton(
                             onClick = {
-                                selected.value = Constants.USER_IMAGES
+                                selected.value = Constants.SELECT_IMAGES
                                 if (userImagesState.isNullOrEmpty()) {
                                     viewModel.onEvent(ProfileEvent.GetUserImages)
                                 }
@@ -184,8 +198,8 @@ fun ProfileScreen(
                             shape = RoundedCornerShape(50.dp),
                             border = BorderStroke(2.dp, Color.Black),
                             colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = if (selected.value == Constants.USER_IMAGES) Color.White else Color.Black,
-                                backgroundColor = if (selected.value == Constants.USER_IMAGES) Color.Black else Color.LightGray
+                                contentColor = if (selected.value == Constants.SELECT_IMAGES) Color.White else Color.Black,
+                                backgroundColor = if (selected.value == Constants.SELECT_IMAGES) Color.Black else Color.LightGray
                             )
                         ) {
                             Row(
@@ -198,7 +212,7 @@ fun ProfileScreen(
                         }
                         OutlinedButton(
                             onClick = {
-                                selected.value = Constants.USER_FAVORITES
+                                selected.value = Constants.SELECT_FAVORITES
                                 if (userFavoritesState.isNullOrEmpty()) {
                                     viewModel.onEvent(ProfileEvent.GetUserFavorites)
                                 }
@@ -206,8 +220,8 @@ fun ProfileScreen(
                             shape = RoundedCornerShape(50.dp),
                             border = BorderStroke(2.dp, Color.Black),
                             colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = if (selected.value == Constants.USER_FAVORITES) Color.White else Color.Black,
-                                backgroundColor = if (selected.value == Constants.USER_FAVORITES) Color.Black else Color.LightGray
+                                contentColor = if (selected.value == Constants.SELECT_FAVORITES) Color.White else Color.Black,
+                                backgroundColor = if (selected.value == Constants.SELECT_FAVORITES) Color.Black else Color.LightGray
                             )
                         ) {
                             Row(
@@ -220,7 +234,7 @@ fun ProfileScreen(
                         }
                     }
                 }
-                if (selected.value == Constants.USER_IMAGES) {
+                if (selected.value == Constants.SELECT_IMAGES) {
                     if (userImagesState.isNotEmpty()) {
                         items(userImagesState) { userImage ->
                             ImageListItem(image = userImage, navController = navController)
@@ -230,14 +244,16 @@ fun ProfileScreen(
                             Column(
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.fillMaxWidth().height(300.dp)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(300.dp)
                             ) {
                                 Text(text = "Lista dodanych jest pusta!")
                             }
                         }
                     }
                 } else {
-                    if (userFavoritesState.isNotEmpty()){
+                    if (userFavoritesState.isNotEmpty()) {
                         items(userFavoritesState) { userFavorite ->
                             ImageListItem(image = userFavorite, navController = navController)
                         }
@@ -246,14 +262,16 @@ fun ProfileScreen(
                             Column(
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.fillMaxWidth().height(300.dp)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(300.dp)
                             ) {
                                 Text(text = "Lista ulubionych jest pusta!")
                             }
                         }
                     }
                 }
-                item { 
+                item {
                     Spacer(modifier = Modifier.height(70.dp))
                 }
             }

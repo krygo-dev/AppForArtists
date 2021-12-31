@@ -20,6 +20,6 @@ object Constants {
     const val PARAM_IMAGE_ID = "id"
 
     // Images in profile selections
-    const val USER_IMAGES = "images"
-    const val USER_FAVORITES = "favorites"
+    const val SELECT_IMAGES = "images"
+    const val SELECT_FAVORITES = "favorites"
 }
