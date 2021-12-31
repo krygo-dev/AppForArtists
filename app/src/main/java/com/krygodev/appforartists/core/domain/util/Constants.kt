@@ -15,6 +15,10 @@ object Constants {
     const val AUTHENTICATION_GRAPH_ROUTE = "authentication"
     const val HOME_GRAPH_ROUTE = "home"
 
+    // Navigation arguments
+    const val PARAM_USER_UID = "uid"
+    const val PARAM_IMAGE_ID = "id"
+
     // Images in profile selections
     const val USER_IMAGES = "images"
     const val USER_FAVORITES = "favorites"

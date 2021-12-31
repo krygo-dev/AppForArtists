@@ -106,7 +106,7 @@ class ProfileViewModel @Inject constructor(
                                 )
                                 _userImages.value = result.data!!
 
-                                Log.e("TAG", userImages.value.toString())
+                                Log.e("TAG2", userImages.value.toString())
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(

@@ -221,13 +221,40 @@ fun ProfileScreen(
                     }
                 }
                 if (selected.value == Constants.USER_IMAGES) {
-                    items(userImagesState) { userImage ->
-                        ImageListItem(image = userImage, navController = navController)
+                    if (userImagesState.isNotEmpty()) {
+                        items(userImagesState) { userImage ->
+                            ImageListItem(image = userImage, navController = navController)
+                        }
+                    } else {
+                        item {
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.fillMaxWidth().height(300.dp)
+                            ) {
+                                Text(text = "Lista dodanych jest pusta!")
+                            }
+                        }
                     }
                 } else {
-                    items(userFavoritesState) { userFavorite ->
-                        ImageListItem(image = userFavorite, navController = navController)
+                    if (userFavoritesState.isNotEmpty()){
+                        items(userFavoritesState) { userFavorite ->
+                            ImageListItem(image = userFavorite, navController = navController)
+                        }
+                    } else {
+                        item {
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.fillMaxWidth().height(300.dp)
+                            ) {
+                                Text(text = "Lista ulubionych jest pusta!")
+                            }
+                        }
                     }
+                }
+                item { 
+                    Spacer(modifier = Modifier.height(70.dp))
                 }
             }
         }

@@ -52,7 +52,7 @@ class ProfileRepositoryImpl(
 
         try {
             val result = _firebaseFirestore.collection(Constants.IMAGES_COLLECTION)
-                .whereIn("uid", listOfUid)
+                .whereIn("id", listOfUid)
                 .get()
                 .await()
                 .toObjects(ImageModel::class.java)
