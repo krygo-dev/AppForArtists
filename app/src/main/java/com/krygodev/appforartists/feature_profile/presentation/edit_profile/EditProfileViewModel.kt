@@ -7,9 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.krygodev.appforartists.core.domain.model.UserModel
 import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.core.presentation.util.LoadingState
+import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
 import com.krygodev.appforartists.feature_profile.domain.use_case.ProfileUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -42,6 +44,11 @@ class EditProfileViewModel @Inject constructor(
                     bio = event.value
                 )
             }
+            is EditProfileEvent.UpdateUsername -> {
+                _user.value = user.value.copy(
+                    username = event.value
+                )
+            }
             is EditProfileEvent.UpdatePhoto -> {
                 viewModelScope.launch {
                     _profileUseCases.uploadUserPhoto(
@@ -66,7 +73,6 @@ class EditProfileViewModel @Inject constructor(
                                 _user.value = user.value.copy(
                                     userPhotoUrl = result.data.toString()
                                 )
-
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(
@@ -132,6 +138,8 @@ class EditProfileViewModel @Inject constructor(
                                 )
 
                                 _eventFlow.emit(UIEvent.ShowSnackbar("Profil zaktualizowany!"))
+                                delay(500)
+                                _eventFlow.emit(UIEvent.NavigateTo(Screen.ProfileScreen.route))
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(

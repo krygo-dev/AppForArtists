@@ -75,7 +75,7 @@ fun ProfileScreen(
                         navController.navigate(Screen.AddEditImageScreen.route)
                     },
                     backgroundColor = Color.Black,
-                    contentColor = Color.White
+                    contentColor = Color.LightGray
                 ) {
                     Icon(imageVector = Icons.Filled.Add, contentDescription = null)
                 }

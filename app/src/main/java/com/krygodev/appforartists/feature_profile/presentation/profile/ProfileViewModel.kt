@@ -1,6 +1,5 @@
 package com.krygodev.appforartists.feature_profile.presentation.profile
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -71,8 +70,6 @@ class ProfileViewModel @Inject constructor(
 
                                 _user.value = result.data!!
 
-                                Log.e("TAG", user.value.toString())
-
                                 onEvent(ProfileEvent.GetUserImages)
                             }
                             is Resource.Error -> {
@@ -106,7 +103,6 @@ class ProfileViewModel @Inject constructor(
                                 )
                                 _userImages.value = result.data!!
 
-                                Log.e("TAG2", userImages.value.toString())
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(
@@ -139,7 +135,6 @@ class ProfileViewModel @Inject constructor(
                                 )
                                 _userFavorites.value = result.data!!
 
-                                Log.e("TAG", userFavorites.value.toString())
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(
