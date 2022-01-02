@@ -6,7 +6,7 @@ import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.GoogleAuthCredential
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
 import com.google.firebase.firestore.FirebaseFirestore
-import com.krygodev.appforartists.core.domain.model.User
+import com.krygodev.appforartists.core.domain.model.UserModel
 import com.krygodev.appforartists.core.domain.util.Constants
 import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.feature_authentication.domain.repository.AuthenticationRepository
@@ -62,7 +62,7 @@ class AuthenticationRepositoryImpl(
             val result = _firebaseAuth.createUserWithEmailAndPassword(email, password).await()
 
             result.user?.let { user ->
-                val newUser = User(uid = user.uid, email = user.email, username = username)
+                val newUser = UserModel(uid = user.uid, email = user.email, username = username)
                 addNewUserToFirestore(newUser)
                 user.sendEmailVerification()
             }
@@ -111,7 +111,7 @@ class AuthenticationRepositoryImpl(
     }
 
 
-    private suspend fun addNewUserToFirestore(user: User) {
+    private suspend fun addNewUserToFirestore(user: UserModel) {
         _firebaseFirestore.collection(Constants.USER_COLLECTION).document(user.uid!!).set(user)
             .await()
     }

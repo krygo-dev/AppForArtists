@@ -1,6 +1,6 @@
 package com.krygodev.appforartists.core.domain.model
 
-data class User(
+data class UserModel(
     val uid: String? = null,
     val email: String? = null,
     val username: String? = null,

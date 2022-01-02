@@ -175,7 +175,8 @@ fun ProfileScreen(
                         ) {
                             Text(
                                 text = "${userState.bio}",
-                                fontSize = 20.sp
+                                fontSize = 20.sp,
+                                maxLines = 7
                             )
                         }
                         Divider()
@@ -185,7 +186,7 @@ fun ProfileScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp),
+                            .padding(vertical = 12.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         OutlinedButton(

@@ -1,20 +1,15 @@
-package com.krygodev.appforartists.feature_profile.presentation.profile
+package com.krygodev.appforartists.feature_profile.presentation.edit_profile
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.krygodev.appforartists.core.domain.model.ImageModel
 import com.krygodev.appforartists.core.domain.model.UserModel
 import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.core.presentation.util.LoadingState
-import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
-import com.krygodev.appforartists.feature_authentication.domain.use_case.AuthenticationUseCases
 import com.krygodev.appforartists.feature_profile.domain.use_case.ProfileUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -23,9 +18,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
+class EditProfileViewModel @Inject constructor(
     private val _profileUseCases: ProfileUseCases,
-    private val _authenticationUseCases: AuthenticationUseCases
 ) : ViewModel() {
 
     private val _state = mutableStateOf(LoadingState())
@@ -37,20 +31,56 @@ class ProfileViewModel @Inject constructor(
     private val _user = mutableStateOf(UserModel())
     val user: State<UserModel> = _user
 
-    private val _userImages = mutableStateOf(listOf<ImageModel>())
-    val userImages: State<List<ImageModel>> = _userImages
-
-    private val _userFavorites = mutableStateOf(listOf<ImageModel>())
-    val userFavorites: State<List<ImageModel>> = _userFavorites
-
-
     init {
-        onEvent(ProfileEvent.GetUserData)
+        onEvent(EditProfileEvent.GetUserData)
     }
 
-    fun onEvent(event: ProfileEvent) {
+    fun onEvent(event: EditProfileEvent) {
         when (event) {
-            is ProfileEvent.GetUserData -> {
+            is EditProfileEvent.UpdateBio -> {
+                _user.value = user.value.copy(
+                    bio = event.value
+                )
+            }
+            is EditProfileEvent.UpdatePhoto -> {
+                viewModelScope.launch {
+                    _profileUseCases.uploadUserPhoto(
+                        uid = user.value.uid!!,
+                        photoUri = event.value
+                    ).onEach { result ->
+                        when (result) {
+                            is Resource.Loading -> {
+                                _state.value = state.value.copy(
+                                    isLoading = true,
+                                    error = "",
+                                    result = null
+                                )
+                            }
+                            is Resource.Success -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = "",
+                                    result = result.data
+                                )
+
+                                _user.value = user.value.copy(
+                                    userPhotoUrl = result.data.toString()
+                                )
+
+                            }
+                            is Resource.Error -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = result.message!!,
+                                    result = null
+                                )
+                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                            }
+                        }
+                    }.launchIn(this)
+                }
+            }
+            is EditProfileEvent.GetUserData -> {
                 viewModelScope.launch {
                     val currentUser = _profileUseCases.getCurrentUser()
                     _profileUseCases.getUserData(currentUser!!.uid).onEach { result ->
@@ -70,10 +100,6 @@ class ProfileViewModel @Inject constructor(
                                 )
 
                                 _user.value = result.data!!
-
-                                Log.e("TAG", user.value.toString())
-
-                                onEvent(ProfileEvent.GetUserImages)
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(
@@ -87,75 +113,9 @@ class ProfileViewModel @Inject constructor(
                     }.launchIn(this)
                 }
             }
-            is ProfileEvent.GetUserImages -> {
+            is EditProfileEvent.UpdateUserData -> {
                 viewModelScope.launch {
-                    _profileUseCases.getUserImages(user.value).onEach { result ->
-                        when (result) {
-                            is Resource.Loading -> {
-                                _state.value = state.value.copy(
-                                    isLoading = true,
-                                    error = "",
-                                    result = null
-                                )
-                            }
-                            is Resource.Success -> {
-                                _state.value = state.value.copy(
-                                    isLoading = false,
-                                    error = "",
-                                    result = result.data
-                                )
-                                _userImages.value = result.data!!
-
-                                Log.e("TAG2", userImages.value.toString())
-                            }
-                            is Resource.Error -> {
-                                _state.value = state.value.copy(
-                                    isLoading = false,
-                                    error = result.message!!,
-                                    result = null
-                                )
-                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
-                            }
-                        }
-                    }.launchIn(this)
-                }
-            }
-            is ProfileEvent.GetUserFavorites -> {
-                viewModelScope.launch {
-                    _profileUseCases.getUserFavorites(user.value).onEach { result ->
-                        when (result) {
-                            is Resource.Loading -> {
-                                _state.value = state.value.copy(
-                                    isLoading = true,
-                                    error = "",
-                                    result = null
-                                )
-                            }
-                            is Resource.Success -> {
-                                _state.value = state.value.copy(
-                                    isLoading = false,
-                                    error = "",
-                                    result = result.data
-                                )
-                                _userFavorites.value = result.data!!
-
-                                Log.e("TAG", userFavorites.value.toString())
-                            }
-                            is Resource.Error -> {
-                                _state.value = state.value.copy(
-                                    isLoading = false,
-                                    error = result.message!!,
-                                    result = null
-                                )
-                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
-                            }
-                        }
-                    }.launchIn(this)
-                }
-            }
-            is ProfileEvent.SignOut -> {
-                viewModelScope.launch {
-                    _authenticationUseCases.signOut().onEach { result ->
+                    _profileUseCases.setOrUpdateUserData(user.value).onEach { result ->
                         when (result) {
                             is Resource.Loading -> {
                                 _state.value = state.value.copy(
@@ -171,9 +131,7 @@ class ProfileViewModel @Inject constructor(
                                     result = result.data
                                 )
 
-                                _eventFlow.emit(UIEvent.ShowSnackbar("Wylogowano!"))
-                                delay(500)
-                                _eventFlow.emit(UIEvent.NavigateTo(Screen.StartupScreen.route))
+                                _eventFlow.emit(UIEvent.ShowSnackbar("Profil zaktualizowany!"))
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(

@@ -9,7 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageException
 import com.krygodev.appforartists.core.domain.model.ImageModel
-import com.krygodev.appforartists.core.domain.model.User
+import com.krygodev.appforartists.core.domain.model.UserModel
 import com.krygodev.appforartists.core.domain.util.Constants
 import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.core.domain.util.serializeToMap
@@ -25,7 +25,7 @@ class ProfileRepositoryImpl(
     private val _firebaseStorage: FirebaseStorage
 ) : ProfileRepository {
 
-    override fun getUserData(uid: String): Flow<Resource<User>> = flow {
+    override fun getUserData(uid: String): Flow<Resource<UserModel>> = flow {
         emit(Resource.Loading())
 
         try {
@@ -34,7 +34,7 @@ class ProfileRepositoryImpl(
                     .document(uid)
                     .get()
                     .await()
-                    .toObject(User::class.java)
+                    .toObject(UserModel::class.java)
 
             emit(Resource.Success(result!!))
 
@@ -68,7 +68,7 @@ class ProfileRepositoryImpl(
         }
     }
 
-    override fun setOrUpdateUserData(user: User): Flow<Resource<Void>> = flow {
+    override fun setOrUpdateUserData(user: UserModel): Flow<Resource<Void>> = flow {
         emit(Resource.Loading())
 
         try {
