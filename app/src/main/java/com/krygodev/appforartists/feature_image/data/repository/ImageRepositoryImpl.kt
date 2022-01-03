@@ -8,16 +8,16 @@ import com.google.firebase.storage.FirebaseStorage
 import com.krygodev.appforartists.core.domain.model.ImageModel
 import com.krygodev.appforartists.core.domain.util.Constants
 import com.krygodev.appforartists.core.domain.util.Resource
-import com.krygodev.appforartists.feature_image.domain.repository.ImagesRepository
+import com.krygodev.appforartists.feature_image.domain.repository.ImageRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import java.io.IOException
 
-class ImagesRepositoryImpl(
+class ImageRepositoryImpl(
     private val _firebaseFirestore: FirebaseFirestore,
     private val _firebaseStorage: FirebaseStorage
-) : ImagesRepository {
+) : ImageRepository {
 
     override fun getImageById(imageId: String): Flow<Resource<ImageModel>> = flow {
         emit(Resource.Loading())
