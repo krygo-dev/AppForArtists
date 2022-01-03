@@ -47,12 +47,12 @@ class ProfileRepositoryImpl(
         }
     }
 
-    override fun getUserImagesOrFavorites(listOfUid: List<String>): Flow<Resource<List<ImageModel>>> = flow {
+    override fun getUserImagesOrFavorites(listOfId: List<String>): Flow<Resource<List<ImageModel>>> = flow {
         emit(Resource.Loading())
 
         try {
             val result = _firebaseFirestore.collection(Constants.IMAGES_COLLECTION)
-                .whereIn("id", listOfUid)
+                .whereIn("id", listOfId)
                 .get()
                 .await()
                 .toObjects(ImageModel::class.java)

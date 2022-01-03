@@ -11,7 +11,7 @@ interface ProfileRepository {
 
     fun getUserData(uid: String) : Flow<Resource<UserModel>>
 
-    fun getUserImagesOrFavorites(listOfUid: List<String>) : Flow<Resource<List<ImageModel>>>
+    fun getUserImagesOrFavorites(listOfId: List<String>) : Flow<Resource<List<ImageModel>>>
 
     fun setOrUpdateUserData(user: UserModel) : Flow<Resource<Void>>
 

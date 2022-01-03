@@ -18,6 +18,6 @@ class GetUserFavorites(
             }
         }
 
-        return _repository.getUserImagesOrFavorites(listOfUid = user.favorites)
+        return _repository.getUserImagesOrFavorites(listOfId = user.favorites)
     }
 }
