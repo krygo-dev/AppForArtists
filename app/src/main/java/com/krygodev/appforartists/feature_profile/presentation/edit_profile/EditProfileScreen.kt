@@ -27,7 +27,6 @@ import coil.transform.CircleCropTransformation
 import com.krygodev.appforartists.R
 import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
-import com.krygodev.appforartists.feature_authentication.presentation.login.LoginEvent
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable

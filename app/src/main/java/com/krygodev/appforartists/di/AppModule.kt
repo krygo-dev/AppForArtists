@@ -6,6 +6,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.krygodev.appforartists.feature_authentication.data.repository.AuthenticationRepositoryImpl
 import com.krygodev.appforartists.feature_authentication.domain.repository.AuthenticationRepository
 import com.krygodev.appforartists.feature_authentication.domain.use_case.*
+import com.krygodev.appforartists.feature_image.data.repository.ImagesRepositoryImpl
+import com.krygodev.appforartists.feature_image.domain.repository.ImagesRepository
 import com.krygodev.appforartists.feature_profile.data.repository.ProfileRepositoryImpl
 import com.krygodev.appforartists.feature_profile.domain.repository.ProfileRepository
 import com.krygodev.appforartists.feature_profile.domain.use_case.*
@@ -79,5 +81,14 @@ object AppModule {
             uploadUserPhoto = UploadUserPhoto(repository),
             getCurrentUser = GetCurrentUser(repository)
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideImagesRepository(
+        firebaseFirestore: FirebaseFirestore,
+        firebaseStorage: FirebaseStorage
+    ): ImagesRepository {
+        return ImagesRepositoryImpl(firebaseFirestore, firebaseStorage)
     }
 }
