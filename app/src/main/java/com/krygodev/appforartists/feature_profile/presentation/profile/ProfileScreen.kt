@@ -175,7 +175,6 @@ fun ProfileScreen(
                         ) {
                             Text(
                                 text = "${userState.bio}",
-                                fontSize = 20.sp,
                                 maxLines = 7
                             )
                         }

@@ -27,6 +27,7 @@ import coil.transform.CircleCropTransformation
 import com.krygodev.appforartists.R
 import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
+import com.krygodev.appforartists.feature_authentication.presentation.login.LoginEvent
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -95,27 +96,33 @@ fun EditProfileScreen(
                 )
             }
         } else {
-            OutlinedButton(
-                onClick = {
-                    navController.navigate(Screen.ProfileScreen.route)
-                },
-                modifier = Modifier.size(40.dp),
-                shape = CircleShape,
-                contentPadding = PaddingValues(0.dp),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = Color.LightGray,
-                    backgroundColor = Color.Black
-                )
+            Row(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(8.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = null,
-                )
+                OutlinedButton(
+                    onClick = {
+                        navController.navigate(Screen.ProfileScreen.route)
+                    },
+                    modifier = Modifier.size(40.dp),
+                    shape = CircleShape,
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = Color.LightGray,
+                        backgroundColor = Color.Black
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = null,
+                    )
+                }
             }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 32.dp),
+                    .padding(top = 48.dp)
+                    .padding(horizontal = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
@@ -138,21 +145,39 @@ fun EditProfileScreen(
                         launcher.launch("image/*")
                     }
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 Column(
                     horizontalAlignment = Alignment.Start,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = "Nazwa użytkownika:")
-                    TextField(
+                    Spacer(modifier = Modifier.height(4.dp))
+                    OutlinedTextField(
                         value = userState.username.toString(),
-                        onValueChange = { viewModel.onEvent(EditProfileEvent.UpdateUsername(it)) }
+                        onValueChange = { viewModel.onEvent(EditProfileEvent.UpdateUsername(it)) },
+                        placeholder = { Text(text = "Nazwa użytkownika") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color.Black,
+                            focusedLabelColor = Color.Black,
+                            cursorColor = Color.Black
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier.fillMaxWidth()
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                     Text(text = "Biogram:")
-                    TextField(
+                    Spacer(modifier = Modifier.height(4.dp))
+                    OutlinedTextField(
                         value = userState.bio.toString(),
-                        onValueChange = { viewModel.onEvent(EditProfileEvent.UpdateBio(it)) }
+                        onValueChange = { viewModel.onEvent(EditProfileEvent.UpdateBio(it)) },
+                        placeholder = { Text(text = "Biogram") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color.Black,
+                            focusedLabelColor = Color.Black,
+                            cursorColor = Color.Black
+                        ),
+                        maxLines = 7,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
