@@ -130,6 +130,8 @@ class ImageDetailsViewModel @Inject constructor(
                                 _comment.value = comment.value.copy(
                                     content = ""
                                 )
+
+                                onEvent(ImageDetailsEvent.GetImageComments(image.value.id!!))
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(
@@ -163,6 +165,7 @@ class ImageDetailsViewModel @Inject constructor(
                                     error = "",
                                     result = result.data
                                 )
+                                onEvent(ImageDetailsEvent.GetImageComments(image.value.id!!))
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(
@@ -196,6 +199,7 @@ class ImageDetailsViewModel @Inject constructor(
                                     error = "",
                                     result = result.data
                                 )
+                                onEvent(ImageDetailsEvent.GetImageComments(image.value.id!!))
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(

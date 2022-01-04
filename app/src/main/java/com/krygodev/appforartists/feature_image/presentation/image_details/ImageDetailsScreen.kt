@@ -1,7 +1,6 @@
 package com.krygodev.appforartists.feature_image.presentation.image_details
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,13 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
-import com.krygodev.appforartists.feature_image.domain.model.CommentModel
+import com.krygodev.appforartists.feature_image.presentation.image_details.components.CommentsListItem
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -127,7 +127,7 @@ fun ImageDetailsScreen(
                     Box(
                         modifier = Modifier
                             .height(250.dp)
-                            .padding(vertical = 8.dp)
+                            .padding(top = 16.dp, bottom = 4.dp)
                     ) {
                         Image(
                             painter = rememberImagePainter(
@@ -141,59 +141,71 @@ fun ImageDetailsScreen(
                 }
                 item {
                     Row(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Text(text = "By ${imageState.authorUsername}")
-                        Text(text = "${imageState.likes}")
-                        IconButton(
-                            onClick = {
-                                if (imageState.likedBy.contains(userState.uid)) {
-                                    viewModel.onEvent(ImageDetailsEvent.DislikeImage)
-                                } else {
-                                    viewModel.onEvent(ImageDetailsEvent.LikeImage)
-                                }
-                            }
-                        ) {
-                            Icon(
-                                imageVector =
-                                    if (imageState.likedBy.contains(userState.uid)) Icons.Filled.ThumbUp
-                                    else Icons.Outlined.ThumbUp,
-                                contentDescription = null,
-                                tint = Color.Blue
+                        Row {
+                            Text(text = "Added by ")
+                            Text(
+                                text = "${imageState.authorUsername}",
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black
                             )
                         }
-                        IconButton(
-                            onClick = {
-                                if (userState.favorites.contains(imageState.id)) {
-                                    viewModel.onEvent(ImageDetailsEvent.RemoveFromFavorites(id = imageState.id!!))
-                                } else {
-                                    viewModel.onEvent(ImageDetailsEvent.AddImageToFavorites(id = imageState.id!!))
-                                }
-                            }
-                        ) {
-                            Icon(
-                                imageVector =
-                                if (userState.favorites.contains(imageState.id)) Icons.Outlined.Favorite
-                                else Icons.Outlined.FavoriteBorder,
-                                contentDescription = null,
-                                tint = Color.Red
+                        Row {
+                            Text(text = "Liked by ")
+                            Text(
+                                text = "${imageState.likes}",
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black
                             )
+                        }
+                        Row {
+                            IconButton(
+                                onClick = {
+                                    if (imageState.likedBy.contains(userState.uid)) {
+                                        viewModel.onEvent(ImageDetailsEvent.DislikeImage)
+                                    } else {
+                                        viewModel.onEvent(ImageDetailsEvent.LikeImage)
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector =
+                                    if (imageState.likedBy.contains(userState.uid)) Icons.Filled.ThumbUp
+                                    else Icons.Outlined.ThumbUp,
+                                    contentDescription = null,
+                                    tint = Color.Blue
+                                )
+                            }
+                            IconButton(
+                                onClick = {
+                                    if (userState.favorites.contains(imageState.id)) {
+                                        viewModel.onEvent(ImageDetailsEvent.RemoveFromFavorites(id = imageState.id!!))
+                                    } else {
+                                        viewModel.onEvent(ImageDetailsEvent.AddImageToFavorites(id = imageState.id!!))
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector =
+                                    if (userState.favorites.contains(imageState.id)) Icons.Outlined.Favorite
+                                    else Icons.Outlined.FavoriteBorder,
+                                    contentDescription = null,
+                                    tint = Color.Red
+                                )
+                            }
                         }
                     }
                 }
                 items(imageCommentsState) { comment ->
-                    val c = CommentModel(
-                        id = comment.id,
-                        authorUid = comment.authorUid,
-                        authorName = comment.authorName,
-                        content = "Test 5",
-                        timestamp = comment.timestamp
-                    )
-                    Text(
-                        text = comment.content,
-                        modifier = Modifier.clickable {
-                            viewModel.onEvent(ImageDetailsEvent.EditComment(c))
-                        }
+                    CommentsListItem(
+                        comment = comment,
+                        user = userState,
+                        onEdit = { viewModel.onEvent(ImageDetailsEvent.EnteredCommentContent(it)) },
+                        onSubmitEdit = { viewModel.onEvent(ImageDetailsEvent.EditComment(comment)) },
+                        onDelete = { viewModel.onEvent(ImageDetailsEvent.DeleteComment(comment)) }
                     )
                 }
             }
