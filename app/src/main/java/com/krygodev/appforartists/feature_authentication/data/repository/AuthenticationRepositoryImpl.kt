@@ -1,9 +1,6 @@
 package com.krygodev.appforartists.feature_authentication.data.repository
 
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthException
-import com.google.firebase.auth.GoogleAuthCredential
+import com.google.firebase.auth.*
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
 import com.google.firebase.firestore.FirebaseFirestore
 import com.krygodev.appforartists.core.domain.model.UserModel
@@ -64,6 +61,9 @@ class AuthenticationRepositoryImpl(
             result.user?.let { user ->
                 val newUser = UserModel(uid = user.uid, email = user.email, username = username)
                 addNewUserToFirestore(newUser)
+                val profileUpdateRequest =
+                    UserProfileChangeRequest.Builder().setDisplayName(username).build()
+                user.updateProfile(profileUpdateRequest)
                 user.sendEmailVerification()
             }
 

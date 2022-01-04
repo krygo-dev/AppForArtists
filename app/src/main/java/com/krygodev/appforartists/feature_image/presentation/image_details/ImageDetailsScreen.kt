@@ -25,6 +25,7 @@ fun ImageDetailsScreen(
 ) {
     val state = viewModel.state.value
     val imageState = viewModel.image.value
+    val userState = viewModel.user.value
     val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(key1 = true) {

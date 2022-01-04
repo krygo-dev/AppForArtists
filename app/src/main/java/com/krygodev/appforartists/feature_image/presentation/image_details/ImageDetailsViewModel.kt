@@ -5,12 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Timestamp
 import com.krygodev.appforartists.core.domain.model.ImageModel
+import com.krygodev.appforartists.core.domain.model.UserModel
 import com.krygodev.appforartists.core.domain.util.Constants
 import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.core.presentation.util.LoadingState
 import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
+import com.krygodev.appforartists.feature_image.domain.model.CommentModel
 import com.krygodev.appforartists.feature_image.domain.use_case.ImageUseCases
 import com.krygodev.appforartists.feature_profile.domain.use_case.ProfileUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,12 +23,13 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class ImageDetailsViewModel @Inject constructor(
     private val _imageUseCases: ImageUseCases,
-    _profileUseCases: ProfileUseCases,
+    private val _profileUseCases: ProfileUseCases,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -38,14 +42,20 @@ class ImageDetailsViewModel @Inject constructor(
     private val _image = mutableStateOf(ImageModel())
     val image: State<ImageModel> = _image
 
-    private val _currentUserUid = mutableStateOf(String())
-    val currentUserUid: State<String> = _currentUserUid
+    private val _imageComments = mutableStateOf(listOf<CommentModel>())
+    val imageComments: State<List<CommentModel>> = _imageComments
+
+    private val _user = mutableStateOf(UserModel())
+    val user: State<UserModel> = _user
+
+    private var _userFavorites = mutableListOf<String>()
 
     init {
         savedStateHandle.get<String>(Constants.PARAM_IMAGE_ID)?.let { id ->
             onEvent(ImageDetailsEvent.GetImageById(id))
+            onEvent(ImageDetailsEvent.GetImageComments(id))
         }
-        _currentUserUid.value = _profileUseCases.getCurrentUser()!!.uid
+        onEvent(ImageDetailsEvent.GetUserData)
     }
 
     fun onEvent(event: ImageDetailsEvent) {
@@ -84,11 +94,125 @@ class ImageDetailsViewModel @Inject constructor(
             }
             is ImageDetailsEvent.AddComment -> {
 
+                val newComment = CommentModel(
+                    authorUid = user.value.uid,
+                    authorName = user.value.username,
+                    content = event.content,
+                    timestamp = Timestamp(Date())
+                )
+
+                viewModelScope.launch {
+                    _imageUseCases.addOrEditComment(
+                        comment = newComment,
+                        id = image.value.id!!
+                    ).onEach { result ->
+                        when (result) {
+                            is Resource.Loading -> {
+                                _state.value = state.value.copy(
+                                    isLoading = true,
+                                    error = "",
+                                    result = null
+                                )
+                            }
+                            is Resource.Success -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = "",
+                                    result = result.data
+                                )
+                            }
+                            is Resource.Error -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = result.message!!,
+                                    result = null
+                                )
+                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                            }
+                        }
+                    }.launchIn(this)
+                }
             }
-            is ImageDetailsEvent.EditComment -> TODO()
-            is ImageDetailsEvent.DeleteComment -> TODO()
-            is ImageDetailsEvent.AddImageToFavorites -> TODO()
-            is ImageDetailsEvent.RemoveFromFavorites -> TODO()
+            is ImageDetailsEvent.EditComment -> {
+                viewModelScope.launch {
+                    _imageUseCases.addOrEditComment(
+                        comment = event.comment,
+                        id = image.value.id!!
+                    ).onEach { result ->
+                        when (result) {
+                            is Resource.Loading -> {
+                                _state.value = state.value.copy(
+                                    isLoading = true,
+                                    error = "",
+                                    result = null
+                                )
+                            }
+                            is Resource.Success -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = "",
+                                    result = result.data
+                                )
+                            }
+                            is Resource.Error -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = result.message!!,
+                                    result = null
+                                )
+                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                            }
+                        }
+                    }.launchIn(this)
+                }
+            }
+            is ImageDetailsEvent.DeleteComment -> {
+                viewModelScope.launch {
+                    _imageUseCases.deleteComment(
+                        comment = event.comment,
+                        id = image.value.id!!
+                    ).onEach { result ->
+                        when (result) {
+                            is Resource.Loading -> {
+                                _state.value = state.value.copy(
+                                    isLoading = true,
+                                    error = "",
+                                    result = null
+                                )
+                            }
+                            is Resource.Success -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = "",
+                                    result = result.data
+                                )
+                            }
+                            is Resource.Error -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = result.message!!,
+                                    result = null
+                                )
+                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                            }
+                        }
+                    }.launchIn(this)
+                }
+            }
+            is ImageDetailsEvent.AddImageToFavorites -> {
+                _userFavorites.add(event.id)
+                _user.value = user.value.copy(
+                    favorites = _userFavorites
+                )
+                onEvent(ImageDetailsEvent.UpdateUserData(user.value))
+            }
+            is ImageDetailsEvent.RemoveFromFavorites -> {
+                _userFavorites.remove(event.id)
+                _user.value = user.value.copy(
+                    favorites = _userFavorites
+                )
+                onEvent(ImageDetailsEvent.UpdateUserData(user.value))
+            }
             is ImageDetailsEvent.DeleteImage -> {
                 viewModelScope.launch {
                     _imageUseCases.deleteImage(image = image.value).onEach { result ->
@@ -109,6 +233,101 @@ class ImageDetailsViewModel @Inject constructor(
                                 _eventFlow.emit(UIEvent.ShowSnackbar("Obraz usunięty!"))
                                 delay(500)
                                 _eventFlow.emit(UIEvent.NavigateTo(Screen.ProfileScreen.route))
+                            }
+                            is Resource.Error -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = result.message!!,
+                                    result = null
+                                )
+                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                            }
+                        }
+                    }.launchIn(this)
+                }
+            }
+            is ImageDetailsEvent.GetImageComments -> {
+                viewModelScope.launch {
+                    _imageUseCases.getImageComments(id = event.id).onEach { result ->
+                        when (result) {
+                            is Resource.Loading -> {
+                                _state.value = state.value.copy(
+                                    isLoading = true,
+                                    error = "",
+                                    result = null
+                                )
+                            }
+                            is Resource.Success -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = "",
+                                    result = result.data
+                                )
+
+                                _imageComments.value = result.data!!
+                            }
+                            is Resource.Error -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = result.message!!,
+                                    result = null
+                                )
+                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                            }
+                        }
+                    }.launchIn(this)
+                }
+            }
+            is ImageDetailsEvent.GetUserData -> {
+                viewModelScope.launch {
+                    _profileUseCases.getUserData(_profileUseCases.getCurrentUser()!!.uid).onEach { result ->
+                        when (result) {
+                            is Resource.Loading -> {
+                                _state.value = state.value.copy(
+                                    isLoading = true,
+                                    error = "",
+                                    result = null
+                                )
+                            }
+                            is Resource.Success -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = "",
+                                    result = result.data
+                                )
+
+                                _user.value = result.data!!
+                                _userFavorites = user.value.favorites.toMutableList()
+                            }
+                            is Resource.Error -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = result.message!!,
+                                    result = null
+                                )
+                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                            }
+                        }
+                    }.launchIn(this)
+                }
+            }
+            is ImageDetailsEvent.UpdateUserData -> {
+                viewModelScope.launch {
+                    _profileUseCases.setOrUpdateUserData(user = event.user).onEach { result ->
+                        when (result) {
+                            is Resource.Loading -> {
+                                _state.value = state.value.copy(
+                                    isLoading = true,
+                                    error = "",
+                                    result = null
+                                )
+                            }
+                            is Resource.Success -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = "",
+                                    result = result.data
+                                )
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(
