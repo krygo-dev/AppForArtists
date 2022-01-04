@@ -6,7 +6,7 @@ data class ImageModel(
     val authorUsername: String? = null,
     val authorUid: String? = null,
     val description: String? = null,
-    val likes: Int? = null,
-    val likedBy: List<String>? = null,
-    val tags: List<String>? = null
+    val likes: Int = 0,
+    val likedBy: List<String> = listOf(),
+    val tags: List<String> = listOf()
 )

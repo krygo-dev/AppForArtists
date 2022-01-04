@@ -1,5 +1,6 @@
 package com.krygodev.appforartists.feature_image.presentation.image_details
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -52,6 +53,7 @@ class ImageDetailsViewModel @Inject constructor(
     val comment: State<CommentModel> = _comment
 
     private var _userFavorites = mutableListOf<String>()
+    private var _imageLikedBy = mutableListOf<String>()
 
     init {
         savedStateHandle.get<String>(Constants.PARAM_IMAGE_ID)?.let { id ->
@@ -82,6 +84,8 @@ class ImageDetailsViewModel @Inject constructor(
                                 )
 
                                 _image.value = result.data!!
+                                _imageLikedBy = image.value.likedBy.toMutableList()
+                                Log.d("TAG", image.value.toString())
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(
@@ -121,6 +125,10 @@ class ImageDetailsViewModel @Inject constructor(
                                     isLoading = false,
                                     error = "",
                                     result = result.data
+                                )
+
+                                _comment.value = comment.value.copy(
+                                    content = ""
                                 )
                             }
                             is Resource.Error -> {
@@ -347,6 +355,52 @@ class ImageDetailsViewModel @Inject constructor(
                 _comment.value = comment.value.copy(
                     content = event.content
                 )
+            }
+            is ImageDetailsEvent.LikeImage -> {
+                _imageLikedBy.add(user.value.uid!!)
+                _image.value = image.value.copy(
+                    likes = _imageLikedBy.size,
+                    likedBy = _imageLikedBy
+                )
+                onEvent(ImageDetailsEvent.UpdateImageLikes)
+            }
+            is ImageDetailsEvent.DislikeImage -> {
+                _imageLikedBy.remove(user.value.uid!!)
+                _image.value = image.value.copy(
+                    likes = _imageLikedBy.size,
+                    likedBy = _imageLikedBy
+                )
+                onEvent(ImageDetailsEvent.UpdateImageLikes)
+            }
+            is ImageDetailsEvent.UpdateImageLikes -> {
+                viewModelScope.launch {
+                    _imageUseCases.editImage(image = image.value).onEach { result ->
+                        when (result) {
+                            is Resource.Loading -> {
+                                _state.value = state.value.copy(
+                                    isLoading = true,
+                                    error = "",
+                                    result = null
+                                )
+                            }
+                            is Resource.Success -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = "",
+                                    result = result.data
+                                )
+                            }
+                            is Resource.Error -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = result.message!!,
+                                    result = null
+                                )
+                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                            }
+                        }
+                    }.launchIn(this)
+                }
             }
         }
     }

@@ -99,6 +99,7 @@ object AppModule {
         return ImageUseCases(
             getImageById = GetImageById(repository),
             addImage = AddImage(repository),
+            editImage = EditImage(repository),
             deleteImage = DeleteImage(repository),
             getImageComments = GetImageComments(repository),
             addOrEditComment = AddOrEditComment(repository),

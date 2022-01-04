@@ -12,6 +12,8 @@ interface ImageRepository {
 
     fun addImage(image: ImageModel, imageUri: Uri) : Flow<Resource<Void>>
 
+    fun editImage(image: ImageModel) : Flow<Resource<Void>>
+
     fun deleteImage(image: ImageModel) : Flow<Resource<Void>>
 
     fun getImageComments(id: String) : Flow<Resource<List<CommentModel>>>

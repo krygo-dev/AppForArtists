@@ -113,7 +113,7 @@ fun EditProfileScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = null,
+                        contentDescription = null
                     )
                 }
             }

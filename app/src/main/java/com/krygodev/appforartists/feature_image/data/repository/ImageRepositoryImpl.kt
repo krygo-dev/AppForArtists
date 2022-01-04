@@ -65,6 +65,26 @@ class ImageRepositoryImpl(
         }
     }
 
+    override fun editImage(image: ImageModel): Flow<Resource<Void>> = flow {
+        emit(Resource.Loading())
+
+        try {
+            val result = _firebaseFirestore.collection(Constants.IMAGES_COLLECTION)
+                .document(image.id!!)
+                .update(image.serializeToMap())
+                .await()
+
+            emit(Resource.Success(result))
+
+        } catch (e: HttpException) {
+            emit(Resource.Error(message = "Coś poszło nie tak!"))
+        } catch (e: IOException) {
+            emit(Resource.Error(message = "Nie udało się połączyć z serwerem, sprawdź połączenie z internetem"))
+        } catch (e: FirebaseFirestoreException) {
+            emit(Resource.Error(message = e.localizedMessage!!))
+        }
+    }
+
     override fun deleteImage(image: ImageModel): Flow<Resource<Void>> = flow {
         emit(Resource.Loading())
 
@@ -128,7 +148,7 @@ class ImageRepositoryImpl(
                 .document(id)
                 .collection(Constants.COMMENTS_COLLECTION)
                 .document(comment.id!!)
-                .update(comment.serializeToMap())
+                .set(comment)
                 .await()
 
             emit(Resource.Success(result))

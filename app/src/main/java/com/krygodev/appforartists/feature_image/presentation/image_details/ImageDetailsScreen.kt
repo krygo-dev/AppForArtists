@@ -1,18 +1,32 @@
 package com.krygodev.appforartists.feature_image.presentation.image_details
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
+import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
+import com.krygodev.appforartists.feature_image.domain.model.CommentModel
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -83,11 +97,105 @@ fun ImageDetailsScreen(
                 )
             }
         } else {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
             ) {
-                Text(text = "$imageState")
+                item {
+                    Row {
+                        OutlinedButton(
+                            onClick = {
+                                navController.navigate(Screen.ProfileScreen.route)
+                            },
+                            modifier = Modifier.size(40.dp),
+                            shape = CircleShape,
+                            contentPadding = PaddingValues(0.dp),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = Color.LightGray,
+                                backgroundColor = Color.Black
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
+                item {
+                    Box(
+                        modifier = Modifier
+                            .height(250.dp)
+                            .padding(vertical = 8.dp)
+                    ) {
+                        Image(
+                            painter = rememberImagePainter(
+                                data = imageState.url,
+                            ),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "By ${imageState.authorUsername}")
+                        Text(text = "${imageState.likes}")
+                        IconButton(
+                            onClick = {
+                                if (imageState.likedBy.contains(userState.uid)) {
+                                    viewModel.onEvent(ImageDetailsEvent.DislikeImage)
+                                } else {
+                                    viewModel.onEvent(ImageDetailsEvent.LikeImage)
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector =
+                                    if (imageState.likedBy.contains(userState.uid)) Icons.Filled.ThumbUp
+                                    else Icons.Outlined.ThumbUp,
+                                contentDescription = null,
+                                tint = Color.Blue
+                            )
+                        }
+                        IconButton(
+                            onClick = {
+                                if (userState.favorites.contains(imageState.id)) {
+                                    viewModel.onEvent(ImageDetailsEvent.RemoveFromFavorites(id = imageState.id!!))
+                                } else {
+                                    viewModel.onEvent(ImageDetailsEvent.AddImageToFavorites(id = imageState.id!!))
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector =
+                                if (userState.favorites.contains(imageState.id)) Icons.Outlined.Favorite
+                                else Icons.Outlined.FavoriteBorder,
+                                contentDescription = null,
+                                tint = Color.Red
+                            )
+                        }
+                    }
+                }
+                items(imageCommentsState) { comment ->
+                    val c = CommentModel(
+                        id = comment.id,
+                        authorUid = comment.authorUid,
+                        authorName = comment.authorName,
+                        content = "Test 5",
+                        timestamp = comment.timestamp
+                    )
+                    Text(
+                        text = comment.content,
+                        modifier = Modifier.clickable {
+                            viewModel.onEvent(ImageDetailsEvent.EditComment(c))
+                        }
+                    )
+                }
             }
         }
     }
