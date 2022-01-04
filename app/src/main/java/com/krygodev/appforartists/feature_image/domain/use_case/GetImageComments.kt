@@ -1,16 +1,16 @@
 package com.krygodev.appforartists.feature_image.domain.use_case
 
-import com.krygodev.appforartists.core.domain.model.ImageModel
 import com.krygodev.appforartists.core.domain.util.Resource
+import com.krygodev.appforartists.feature_image.domain.model.CommentModel
 import com.krygodev.appforartists.feature_image.domain.repository.ImageRepository
 import kotlinx.coroutines.flow.Flow
 
-class GetImageById(
+class GetImageComments(
     private val _repository: ImageRepository
 ) {
 
-    operator fun invoke(imageId: String): Flow<Resource<ImageModel>> {
-        return _repository.getImageById(id = imageId)
+    operator fun invoke(id: String): Flow<Resource<List<CommentModel>>> {
+        return _repository.getImageComments(id = id)
     }
 
 }

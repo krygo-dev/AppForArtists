@@ -5,6 +5,7 @@ object Constants {
     // Firestore collections
     const val USER_COLLECTION = "Users"
     const val IMAGES_COLLECTION = "Images"
+    const val COMMENTS_COLLECTION = "Comments"
 
     // Storage bucket
     const val IMAGES_BUCKET = "images"

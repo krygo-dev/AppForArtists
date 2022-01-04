@@ -8,10 +8,7 @@ import com.krygodev.appforartists.feature_authentication.domain.repository.Authe
 import com.krygodev.appforartists.feature_authentication.domain.use_case.*
 import com.krygodev.appforartists.feature_image.data.repository.ImageRepositoryImpl
 import com.krygodev.appforartists.feature_image.domain.repository.ImageRepository
-import com.krygodev.appforartists.feature_image.domain.use_case.AddImage
-import com.krygodev.appforartists.feature_image.domain.use_case.DeleteImage
-import com.krygodev.appforartists.feature_image.domain.use_case.GetImageById
-import com.krygodev.appforartists.feature_image.domain.use_case.ImageUseCases
+import com.krygodev.appforartists.feature_image.domain.use_case.*
 import com.krygodev.appforartists.feature_profile.data.repository.ProfileRepositoryImpl
 import com.krygodev.appforartists.feature_profile.domain.repository.ProfileRepository
 import com.krygodev.appforartists.feature_profile.domain.use_case.*
@@ -102,7 +99,10 @@ object AppModule {
         return ImageUseCases(
             getImageById = GetImageById(repository),
             addImage = AddImage(repository),
-            deleteImage = DeleteImage(repository)
+            deleteImage = DeleteImage(repository),
+            getImageComments = GetImageComments(repository),
+            addOrEditComment = AddOrEditComment(repository),
+            deleteComment = DeleteComment(repository)
         )
     }
 }

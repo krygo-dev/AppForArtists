@@ -71,7 +71,7 @@ fun NavGraphBuilder.homeNavGraph(
         composable(route = Screen.AddEditImageScreen.route) {
             AddEditImageScreen(navController = navController)
         }
-        composable(route = Screen.ProfileScreen.route + "/{uid}") {
+        composable(route = Screen.ProfileScreen.route) {
             ProfileScreen(navController = navController)
         }
         composable(route = Screen.EditProfileScreen.route) {
