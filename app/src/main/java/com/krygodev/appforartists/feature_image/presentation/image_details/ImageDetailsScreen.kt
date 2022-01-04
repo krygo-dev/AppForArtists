@@ -1,12 +1,9 @@
 package com.krygodev.appforartists.feature_image.presentation.image_details
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -26,6 +23,8 @@ fun ImageDetailsScreen(
     val state = viewModel.state.value
     val imageState = viewModel.image.value
     val userState = viewModel.user.value
+    val imageCommentsState = viewModel.imageComments.value
+    val commentState = viewModel.comment.value
     val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(key1 = true) {
@@ -45,7 +44,33 @@ fun ImageDetailsScreen(
 
     Scaffold(
         scaffoldState = scaffoldState,
-        modifier = Modifier.padding(horizontal = 8.dp)
+        modifier = Modifier.padding(horizontal = 8.dp),
+        bottomBar = {
+            Row(
+                modifier = Modifier.padding(horizontal = 8.dp)
+            ) {
+                OutlinedTextField(
+                    value = commentState.content,
+                    trailingIcon = {
+                        IconButton(
+                            onClick = { viewModel.onEvent(ImageDetailsEvent.AddComment) }
+                        ) {
+                            Icon(imageVector = Icons.Filled.Send, contentDescription = null)
+                        }
+                    },
+                    onValueChange = { viewModel.onEvent(ImageDetailsEvent.EnteredCommentContent(it)) },
+                    label = { Text(text = "Wpisz komentarz") },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Black,
+                        focusedLabelColor = Color.Black,
+                        cursorColor = Color.Black,
+                        trailingIconColor = Color.Black
+                    ),
+                    maxLines = 3,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
     ) {
         if (state.isLoading) {
             Box(

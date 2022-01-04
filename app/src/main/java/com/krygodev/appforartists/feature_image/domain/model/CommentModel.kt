@@ -6,6 +6,6 @@ data class CommentModel(
     var id: String? = null,
     val authorUid: String? = null,
     val authorName: String? = null,
-    val content: String? = null,
+    val content: String = "",
     val timestamp: Timestamp? = null
 )

@@ -48,6 +48,9 @@ class ImageDetailsViewModel @Inject constructor(
     private val _user = mutableStateOf(UserModel())
     val user: State<UserModel> = _user
 
+    private val _comment = mutableStateOf(CommentModel())
+    val comment: State<CommentModel> = _comment
+
     private var _userFavorites = mutableListOf<String>()
 
     init {
@@ -94,16 +97,15 @@ class ImageDetailsViewModel @Inject constructor(
             }
             is ImageDetailsEvent.AddComment -> {
 
-                val newComment = CommentModel(
+                _comment.value = comment.value.copy(
                     authorUid = user.value.uid,
                     authorName = user.value.username,
-                    content = event.content,
                     timestamp = Timestamp(Date())
                 )
 
                 viewModelScope.launch {
                     _imageUseCases.addOrEditComment(
-                        comment = newComment,
+                        comment = comment.value,
                         id = image.value.id!!
                     ).onEach { result ->
                         when (result) {
@@ -340,6 +342,11 @@ class ImageDetailsViewModel @Inject constructor(
                         }
                     }.launchIn(this)
                 }
+            }
+            is ImageDetailsEvent.EnteredCommentContent -> {
+                _comment.value = comment.value.copy(
+                    content = event.content
+                )
             }
         }
     }
