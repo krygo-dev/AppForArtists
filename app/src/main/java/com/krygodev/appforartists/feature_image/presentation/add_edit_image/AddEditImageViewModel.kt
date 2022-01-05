@@ -230,6 +230,9 @@ class AddEditImageViewModel @Inject constructor(
                     tags = event.tags.split("-")
                 )
             }
+            is AddEditImageEvent.ChangeImageUri -> {
+                _imageUri.value = event.uri
+            }
         }
     }
 }

@@ -1,5 +1,8 @@
 package com.krygodev.appforartists.feature_image.presentation.add_edit_image
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -24,8 +27,15 @@ fun AddEditImageScreen(
 ) {
     val state = viewModel.state.value
     val imageState = viewModel.image.value
+    val imageUriState = viewModel.imageUri.value
     val userState = viewModel.user.value
     val scaffoldState = rememberScaffoldState()
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        viewModel.onEvent(AddEditImageEvent.ChangeImageUri(uri))
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
