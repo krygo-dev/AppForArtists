@@ -145,40 +145,6 @@ class ImageDetailsViewModel @Inject constructor(
                     }.launchIn(this)
                 }
             }
-            is ImageDetailsEvent.EditComment -> {
-                viewModelScope.launch {
-                    _imageUseCases.addOrEditComment(
-                        comment = event.comment,
-                        id = image.value.id!!
-                    ).onEach { result ->
-                        when (result) {
-                            is Resource.Loading -> {
-                                _state.value = state.value.copy(
-                                    isLoading = true,
-                                    error = "",
-                                    result = null
-                                )
-                            }
-                            is Resource.Success -> {
-                                _state.value = state.value.copy(
-                                    isLoading = false,
-                                    error = "",
-                                    result = result.data
-                                )
-                                onEvent(ImageDetailsEvent.GetImageComments(image.value.id!!))
-                            }
-                            is Resource.Error -> {
-                                _state.value = state.value.copy(
-                                    isLoading = false,
-                                    error = result.message!!,
-                                    result = null
-                                )
-                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
-                            }
-                        }
-                    }.launchIn(this)
-                }
-            }
             is ImageDetailsEvent.DeleteComment -> {
                 viewModelScope.launch {
                     _imageUseCases.deleteComment(

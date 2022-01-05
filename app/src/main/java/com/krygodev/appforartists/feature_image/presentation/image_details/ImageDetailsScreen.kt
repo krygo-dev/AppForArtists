@@ -1,6 +1,7 @@
 package com.krygodev.appforartists.feature_image.presentation.image_details
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,6 +29,7 @@ import coil.compose.rememberImagePainter
 import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
 import com.krygodev.appforartists.feature_image.presentation.image_details.components.CommentsListItem
+import com.krygodev.appforartists.feature_image.presentation.image_details.components.TagListItem
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -61,13 +64,20 @@ fun ImageDetailsScreen(
         modifier = Modifier.padding(horizontal = 8.dp),
         bottomBar = {
             Row(
-                modifier = Modifier.padding(horizontal = 8.dp)
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .background(Color.White)
             ) {
+                val focusManager = LocalFocusManager.current
+
                 OutlinedTextField(
                     value = commentState.content,
                     trailingIcon = {
                         IconButton(
-                            onClick = { viewModel.onEvent(ImageDetailsEvent.AddComment) }
+                            onClick = {
+                                viewModel.onEvent(ImageDetailsEvent.AddComment)
+                                focusManager.clearFocus()
+                            }
                         ) {
                             Icon(imageVector = Icons.Filled.Send, contentDescription = null)
                         }
@@ -199,14 +209,25 @@ fun ImageDetailsScreen(
                         }
                     }
                 }
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        imageState.tags.forEach { tag ->
+                            TagListItem(tag = tag)
+                        }
+                    }
+                }
                 items(imageCommentsState) { comment ->
                     CommentsListItem(
                         comment = comment,
                         user = userState,
-                        onEdit = { viewModel.onEvent(ImageDetailsEvent.EnteredCommentContent(it)) },
-                        onSubmitEdit = { viewModel.onEvent(ImageDetailsEvent.EditComment(comment)) },
                         onDelete = { viewModel.onEvent(ImageDetailsEvent.DeleteComment(comment)) }
                     )
+                }
+                item {
+                    Spacer(modifier = Modifier.height(70.dp))
                 }
             }
         }

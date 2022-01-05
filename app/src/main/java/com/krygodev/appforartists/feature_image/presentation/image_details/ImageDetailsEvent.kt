@@ -6,7 +6,6 @@ import com.krygodev.appforartists.feature_image.domain.model.CommentModel
 sealed class ImageDetailsEvent {
     data class GetImageById(val id: String): ImageDetailsEvent()
     data class GetImageComments(val id: String) :ImageDetailsEvent()
-    data class EditComment(val comment: CommentModel): ImageDetailsEvent()
     data class DeleteComment(val comment: CommentModel): ImageDetailsEvent()
     data class AddImageToFavorites(val id: String): ImageDetailsEvent()
     data class RemoveFromFavorites(val id: String): ImageDetailsEvent()
