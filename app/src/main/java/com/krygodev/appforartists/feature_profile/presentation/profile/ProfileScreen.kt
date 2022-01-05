@@ -72,7 +72,7 @@ fun ProfileScreen(
             if (selected.value == Constants.SELECT_IMAGES) {
                 FloatingActionButton(
                     onClick = {
-                        navController.navigate(Screen.AddEditImageScreen.route)
+                        navController.navigate(Screen.AddEditImageScreen.route + "/-1")
                     },
                     backgroundColor = Color.Black,
                     contentColor = Color.LightGray

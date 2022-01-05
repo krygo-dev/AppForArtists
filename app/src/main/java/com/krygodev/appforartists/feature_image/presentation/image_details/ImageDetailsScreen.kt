@@ -136,7 +136,7 @@ fun ImageDetailsScreen(
                             Row {
                                 OutlinedButton(
                                     onClick = {
-                                        navController.navigate(Screen.ProfileScreen.route)
+                                        navController.navigate(Screen.AddEditImageScreen.route + "/${imageState.id}")
                                     },
                                     modifier = Modifier.size(40.dp),
                                     shape = CircleShape,
@@ -265,7 +265,7 @@ fun ImageDetailsScreen(
                             .fillMaxWidth()
                             .padding(vertical = 10.dp)
                     ) {
-                        Text(text = "${imageState.description}")
+                        Text(text = if (imageState.description.isNullOrEmpty()) "" else imageState.description)
                     }
                     Divider()
                 }

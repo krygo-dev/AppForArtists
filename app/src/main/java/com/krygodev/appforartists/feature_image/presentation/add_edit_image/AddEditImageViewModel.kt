@@ -11,10 +11,12 @@ import com.krygodev.appforartists.core.domain.model.UserModel
 import com.krygodev.appforartists.core.domain.util.Constants
 import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.core.presentation.util.LoadingState
+import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
 import com.krygodev.appforartists.feature_image.domain.use_case.ImageUseCases
 import com.krygodev.appforartists.feature_profile.domain.use_case.ProfileUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -45,6 +47,7 @@ class AddEditImageViewModel @Inject constructor(
     val user: State<UserModel> = _user
 
     private var _userImages = mutableListOf<String>()
+    private var _imageTags = mutableListOf<String>()
 
     init {
         savedStateHandle.get<String>(Constants.PARAM_IMAGE_ID)?.let { id ->
@@ -75,6 +78,7 @@ class AddEditImageViewModel @Inject constructor(
                                     result = result.data
                                 )
                                 _image.value = result.data!!
+                                _imageTags = image.value.tags.toMutableList()
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(
@@ -152,10 +156,15 @@ class AddEditImageViewModel @Inject constructor(
                 }
             }
             is AddEditImageEvent.AddImage -> {
+                _image.value = image.value.copy(
+                    authorUsername = user.value.username,
+                    authorUid = user.value.uid
+                )
+
                 viewModelScope.launch {
                     _imageUseCases.addImage(
                         image = image.value,
-                        imageUri = imageUri.value!!
+                        imageUri = imageUri.value
                     ).onEach { result ->
                         when (result) {
                             is Resource.Loading -> {
@@ -177,6 +186,9 @@ class AddEditImageViewModel @Inject constructor(
                                     images = _userImages
                                 )
                                 onEvent(AddEditImageEvent.UpdateUserData)
+                                _eventFlow.emit(UIEvent.ShowSnackbar("Obraz dodany pomyślnie!"))
+                                delay(500)
+                                _eventFlow.emit(UIEvent.NavigateTo(Screen.ProfileScreen.route))
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(
@@ -207,6 +219,9 @@ class AddEditImageViewModel @Inject constructor(
                                     error = "",
                                     result = result.data
                                 )
+                                _eventFlow.emit(UIEvent.ShowSnackbar("Edycja obrazu pomyślna!"))
+                                delay(500)
+                                _eventFlow.emit(UIEvent.NavigateTo(Screen.ImageDetailsScreen.route + "/${image.value.id}"))
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(
@@ -226,8 +241,9 @@ class AddEditImageViewModel @Inject constructor(
                 )
             }
             is AddEditImageEvent.EnteredTags -> {
+                _imageTags[event.index] = event.tag
                 _image.value = image.value.copy(
-                    tags = event.tags.split("-")
+                    tags = _imageTags
                 )
             }
             is AddEditImageEvent.ChangeImageUri -> {
