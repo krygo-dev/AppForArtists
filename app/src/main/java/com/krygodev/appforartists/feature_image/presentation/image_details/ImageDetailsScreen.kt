@@ -8,9 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.ThumbUp
@@ -113,7 +111,10 @@ fun ImageDetailsScreen(
                     .padding(8.dp)
             ) {
                 item {
-                    Row {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         OutlinedButton(
                             onClick = {
                                 navController.navigate(Screen.ProfileScreen.route)
@@ -130,6 +131,45 @@ fun ImageDetailsScreen(
                                 imageVector = Icons.Filled.ArrowBack,
                                 contentDescription = null
                             )
+                        }
+                        if (imageState.authorUid == userState.uid) {
+                            Row {
+                                OutlinedButton(
+                                    onClick = {
+                                        navController.navigate(Screen.ProfileScreen.route)
+                                    },
+                                    modifier = Modifier.size(40.dp),
+                                    shape = CircleShape,
+                                    contentPadding = PaddingValues(0.dp),
+                                    colors = ButtonDefaults.outlinedButtonColors(
+                                        contentColor = Color.LightGray,
+                                        backgroundColor = Color.Black
+                                    )
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Edit,
+                                        contentDescription = null
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(4.dp))
+                                OutlinedButton(
+                                    onClick = {
+                                        viewModel.onEvent(ImageDetailsEvent.DeleteImage)
+                                    },
+                                    modifier = Modifier.size(40.dp),
+                                    shape = CircleShape,
+                                    contentPadding = PaddingValues(0.dp),
+                                    colors = ButtonDefaults.outlinedButtonColors(
+                                        contentColor = Color.LightGray,
+                                        backgroundColor = Color.Black
+                                    )
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Delete,
+                                        contentDescription = null
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -219,12 +259,23 @@ fun ImageDetailsScreen(
                         }
                     }
                 }
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 10.dp)
+                    ) {
+                        Text(text = "${imageState.description}")
+                    }
+                    Divider()
+                }
                 items(imageCommentsState) { comment ->
                     CommentsListItem(
                         comment = comment,
                         user = userState,
                         onDelete = { viewModel.onEvent(ImageDetailsEvent.DeleteComment(comment)) }
                     )
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
                 item {
                     Spacer(modifier = Modifier.height(70.dp))

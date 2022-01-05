@@ -30,12 +30,10 @@ fun CommentsListItem(
         ) {
             Text(
                 text = "${comment.authorName} : ",
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
+                fontWeight = FontWeight.Bold
             )
             Text(
-                text = comment.content,
-                fontSize = 18.sp
+                text = comment.content
             )
         }
         if (comment.authorUid == user.uid) {
@@ -47,6 +45,7 @@ fun CommentsListItem(
                 Text(
                     text = "Usuń",
                     fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
                     modifier = Modifier.clickable { onDelete(comment) }
                 )
             }
