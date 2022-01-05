@@ -10,7 +10,7 @@ class AddImage(
     private val _repository: ImageRepository
 ) {
 
-    operator fun invoke(image: ImageModel, imageUri: Uri): Flow<Resource<Void>> {
+    operator fun invoke(image: ImageModel, imageUri: Uri): Flow<Resource<String>> {
         return _repository.addImage(image = image, imageUri = imageUri)
     }
 

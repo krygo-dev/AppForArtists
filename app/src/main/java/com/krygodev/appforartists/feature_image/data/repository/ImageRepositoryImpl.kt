@@ -43,7 +43,7 @@ class ImageRepositoryImpl(
         }
     }
 
-    override fun addImage(image: ImageModel, imageUri: Uri): Flow<Resource<Void>> = flow {
+    override fun addImage(image: ImageModel, imageUri: Uri): Flow<Resource<String>> = flow {
         emit(Resource.Loading())
 
         try {
@@ -52,9 +52,9 @@ class ImageRepositoryImpl(
             image.id = ref.id
             image.url = uploadImageToStorage(imageId = image.id!!, imageUri = imageUri)
 
-            val result = ref.set(image).await()
+            ref.set(image).await()
 
-            emit(Resource.Success(result))
+            emit(Resource.Success(image.id!!))
 
         } catch (e: HttpException) {
             emit(Resource.Error(message = "Coś poszło nie tak!"))

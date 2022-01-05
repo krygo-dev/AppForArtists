@@ -1,11 +1,9 @@
 package com.krygodev.appforartists.core.presentation.components
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
+import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
 import com.krygodev.appforartists.core.domain.util.Constants
 import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.feature_authentication.presentation.login.LoginScreen
@@ -68,7 +66,15 @@ fun NavGraphBuilder.homeNavGraph(
         composable(route = Screen.ImageDetailsScreen.route + "/{id}") {
             ImageDetailsScreen(navController = navController)
         }
-        composable(route = Screen.AddEditImageScreen.route) {
+        composable(
+            route = Screen.AddEditImageScreen.route + "/{id}",
+            arguments = listOf(
+                navArgument(name = "id") {
+                    type = NavType.StringType
+                    defaultValue = "-1"
+                }
+            )
+        ) {
             AddEditImageScreen(navController = navController)
         }
         composable(route = Screen.ProfileScreen.route) {
