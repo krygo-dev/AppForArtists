@@ -14,14 +14,16 @@ import androidx.compose.ui.unit.dp
 fun TagListItem(
     tag: String
 ) {
-    Box(
-        modifier = Modifier
-            .border(
-                width = 2.dp,
-                color = Color.Black,
-                shape = RoundedCornerShape(20.dp)
-            )
-    ) {
-        Text(text = tag, modifier = Modifier.padding(6.dp))
+    Box(modifier = Modifier.padding(2.dp)) {
+        Box(
+            modifier = Modifier
+                .border(
+                    width = 2.dp,
+                    color = Color.Black,
+                    shape = RoundedCornerShape(20.dp)
+                )
+        ) {
+            Text(text = tag, modifier = Modifier.padding(6.dp))
+        }
     }
 }

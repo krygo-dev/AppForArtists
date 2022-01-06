@@ -5,8 +5,8 @@ import android.net.Uri
 sealed class AddEditImageEvent {
     data class GetImageById(val id: String): AddEditImageEvent()
     data class EnteredDescription(val content: String): AddEditImageEvent()
-    data class CheckedTag(val tag: String): AddEditImageEvent()
-    data class UncheckedTag(val tag: String): AddEditImageEvent()
+    data class CheckTag(val tag: String): AddEditImageEvent()
+    data class UncheckTag(val tag: String): AddEditImageEvent()
     data class ChangeImageUri(val uri: Uri?): AddEditImageEvent()
     object GetUserData: AddEditImageEvent()
     object UpdateUserData: AddEditImageEvent()

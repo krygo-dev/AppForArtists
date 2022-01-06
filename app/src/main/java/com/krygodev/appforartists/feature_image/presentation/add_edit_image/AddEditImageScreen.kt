@@ -207,9 +207,12 @@ fun AddEditImageScreen(
                                     onCheckedChange = {
                                         isChecked.value = it
                                         if (isChecked.value) {
-                                            viewModel.onEvent(AddEditImageEvent.CheckedTag(tag = tag))
+                                            if (imageState.tags.size + 1 > 4) {
+                                                isChecked.value = false
+                                            }
+                                            viewModel.onEvent(AddEditImageEvent.CheckTag(tag = tag))
                                         } else {
-                                            viewModel.onEvent(AddEditImageEvent.UncheckedTag(tag = tag))
+                                            viewModel.onEvent(AddEditImageEvent.UncheckTag(tag = tag))
                                         }
                                     },
                                     enabled = true,

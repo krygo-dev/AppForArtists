@@ -1,7 +1,6 @@
 package com.krygodev.appforartists.feature_image.presentation.add_edit_image
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -241,16 +240,20 @@ class AddEditImageViewModel @Inject constructor(
                     description = event.content
                 )
             }
-            is AddEditImageEvent.CheckedTag -> {
+            is AddEditImageEvent.CheckTag -> {
                 _imageTags.add(event.tag)
-                Log.d("TAGVMA", _imageTags.toString())
                 _image.value = image.value.copy(
                     tags = _imageTags
                 )
+                if (_imageTags.size > 4) {
+                    viewModelScope.launch {
+                        _eventFlow.emit(UIEvent.ShowSnackbar("Możesz dodać maksymalnie 4 tagi!"))
+                    }
+                    onEvent(AddEditImageEvent.UncheckTag(event.tag))
+                }
             }
-            is AddEditImageEvent.UncheckedTag -> {
+            is AddEditImageEvent.UncheckTag -> {
                 _imageTags.remove(event.tag)
-                Log.d("TAGVMR", _imageTags.toString())
                 _image.value = image.value.copy(
                     tags = _imageTags
                 )
