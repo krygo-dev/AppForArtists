@@ -1,12 +1,15 @@
 package com.krygodev.appforartists.feature_image.presentation.add_edit_image
 
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -25,8 +28,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.krygodev.appforartists.core.presentation.util.UIEvent
+import com.krygodev.appforartists.feature_image.presentation.util.ImageTags
 import kotlinx.coroutines.flow.collectLatest
 
+@ExperimentalFoundationApi
 @Composable
 fun AddEditImageScreen(
     navController: NavController,
@@ -39,6 +44,21 @@ fun AddEditImageScreen(
     val scaffoldState = rememberScaffoldState()
 
     val imageSelected = remember { mutableStateOf(false) }
+
+    val tagsList = listOf(
+        ImageTags.ABSTRACTION,
+        ImageTags.ANIMAL,
+        ImageTags.CITY,
+        ImageTags.DRAWING,
+        ImageTags.FANART,
+        ImageTags.GRAPHICS,
+        ImageTags.IMAGE,
+        ImageTags.LANDSCAPE,
+        ImageTags.NATURE,
+        ImageTags.PAINTING,
+        ImageTags.PHOTOGRAPHY,
+        ImageTags.PORTRAIT
+    )
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -168,26 +188,42 @@ fun AddEditImageScreen(
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
                 ) {
-                    imageState.tags.forEachIndexed { index, tag ->
-                        OutlinedTextField(
-                            value = tag,
-                            onValueChange = {
-                                Log.e("TAG", index.toString())
-                                viewModel.onEvent(
-                                    AddEditImageEvent.EnteredTags(tag = it, index = index)
+                    LazyVerticalGrid(
+                        cells = GridCells.Fixed(3),
+                        contentPadding = PaddingValues(8.dp)
+                    ) {
+                        items(tagsList) { tag ->
+                            Row {
+                                val isChecked =
+                                    if (imageState.tags.contains(tag)) remember {
+                                        mutableStateOf(
+                                            true
+                                        )
+                                    }
+                                    else remember { mutableStateOf(false) }
+
+                                Checkbox(
+                                    checked = isChecked.value,
+                                    onCheckedChange = {
+                                        isChecked.value = it
+                                        if (isChecked.value) {
+                                            viewModel.onEvent(AddEditImageEvent.CheckedTag(tag = tag))
+                                        } else {
+                                            viewModel.onEvent(AddEditImageEvent.UncheckedTag(tag = tag))
+                                        }
+                                    },
+                                    enabled = true,
+                                    colors = CheckboxDefaults.colors(
+                                        checkedColor = Color.Black,
+                                        uncheckedColor = Color.Black,
+                                        checkmarkColor = Color.White
+                                    )
                                 )
-                            },
-                            placeholder = { Text(text = "Tag") },
-                            colors = TextFieldDefaults.outlinedTextFieldColors(
-                                focusedBorderColor = Color.Black,
-                                focusedLabelColor = Color.Black,
-                                cursorColor = Color.Black
-                            ),
-                            maxLines = 1,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
+                                Text(text = tag)
+                            }
+                        }
                     }
+
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = if (imageState.description != null) imageState.description.toString() else "",

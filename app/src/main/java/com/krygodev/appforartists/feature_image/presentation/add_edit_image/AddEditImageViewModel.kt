@@ -1,6 +1,7 @@
 package com.krygodev.appforartists.feature_image.presentation.add_edit_image
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -240,8 +241,16 @@ class AddEditImageViewModel @Inject constructor(
                     description = event.content
                 )
             }
-            is AddEditImageEvent.EnteredTags -> {
-                _imageTags[event.index] = event.tag
+            is AddEditImageEvent.CheckedTag -> {
+                _imageTags.add(event.tag)
+                Log.d("TAGVMA", _imageTags.toString())
+                _image.value = image.value.copy(
+                    tags = _imageTags
+                )
+            }
+            is AddEditImageEvent.UncheckedTag -> {
+                _imageTags.remove(event.tag)
+                Log.d("TAGVMR", _imageTags.toString())
                 _image.value = image.value.copy(
                     tags = _imageTags
                 )

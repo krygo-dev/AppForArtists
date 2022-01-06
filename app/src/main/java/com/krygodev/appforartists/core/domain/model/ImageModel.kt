@@ -8,5 +8,5 @@ data class ImageModel(
     val description: String? = null,
     val likes: Int = 0,
     val likedBy: List<String> = listOf(),
-    val tags: List<String> = listOf("Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5")
+    val tags: List<String> = listOf()
 )
