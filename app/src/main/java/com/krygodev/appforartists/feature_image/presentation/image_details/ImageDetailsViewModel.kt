@@ -52,6 +52,7 @@ class ImageDetailsViewModel @Inject constructor(
     private val _comment = mutableStateOf(CommentModel())
     val comment: State<CommentModel> = _comment
 
+    private var _userImages = mutableListOf<String>()
     private var _userFavorites = mutableListOf<String>()
     private var _imageLikedBy = mutableListOf<String>()
 
@@ -150,6 +151,7 @@ class ImageDetailsViewModel @Inject constructor(
                                 )
 
                                 _user.value = result.data!!
+                                _userImages = user.value.images.toMutableList()
                                 _userFavorites = user.value.favorites.toMutableList()
                             }
                             is Resource.Error -> {
@@ -181,6 +183,13 @@ class ImageDetailsViewModel @Inject constructor(
                                     error = "",
                                     result = result.data
                                 )
+
+                                _userImages.remove(image.value.id)
+                                _user.value = user.value.copy(
+                                    images = _userImages
+                                )
+                                onEvent(ImageDetailsEvent.UpdateUserData(user.value))
+
                                 _eventFlow.emit(UIEvent.ShowSnackbar("Obraz usunięty!"))
                                 delay(500)
                                 _eventFlow.emit(UIEvent.NavigateTo(Screen.ProfileScreen.route))
