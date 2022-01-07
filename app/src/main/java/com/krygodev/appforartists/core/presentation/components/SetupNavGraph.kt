@@ -1,5 +1,6 @@
 package com.krygodev.appforartists.core.presentation.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
@@ -17,6 +18,7 @@ import com.krygodev.appforartists.feature_profile.presentation.edit_profile.Edit
 import com.krygodev.appforartists.feature_profile.presentation.messages.MessagesScreen
 import com.krygodev.appforartists.feature_profile.presentation.profile.ProfileScreen
 
+@ExperimentalFoundationApi
 @Composable
 fun SetupNavGraph(
     navController: NavHostController
@@ -50,6 +52,7 @@ fun NavGraphBuilder.authenticationNavGraph(
     }
 }
 
+@ExperimentalFoundationApi
 fun NavGraphBuilder.homeNavGraph(
     navController: NavHostController
 ) {
@@ -69,7 +72,7 @@ fun NavGraphBuilder.homeNavGraph(
         composable(
             route = Screen.AddEditImageScreen.route + "/{id}",
             arguments = listOf(
-                navArgument(name = "id") {
+                navArgument(name = Constants.PARAM_IMAGE_ID) {
                     type = NavType.StringType
                     defaultValue = "-1"
                 }
@@ -77,7 +80,15 @@ fun NavGraphBuilder.homeNavGraph(
         ) {
             AddEditImageScreen(navController = navController)
         }
-        composable(route = Screen.ProfileScreen.route) {
+        composable(
+            route = Screen.ProfileScreen.route + "?uid={uid}",
+            arguments = listOf(
+                navArgument(name = Constants.PARAM_USER_UID) {
+                    type = NavType.StringType
+                    defaultValue = "-1"
+                }
+            )
+        ) {
             ProfileScreen(navController = navController)
         }
         composable(route = Screen.EditProfileScreen.route) {

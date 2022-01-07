@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Timestamp
 import com.krygodev.appforartists.core.domain.model.ImageModel
 import com.krygodev.appforartists.core.domain.model.UserModel
 import com.krygodev.appforartists.core.domain.util.Constants
@@ -22,6 +23,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -158,7 +160,8 @@ class AddEditImageViewModel @Inject constructor(
             is AddEditImageEvent.AddImage -> {
                 _image.value = image.value.copy(
                     authorUsername = user.value.username,
-                    authorUid = user.value.uid
+                    authorUid = user.value.uid,
+                    timestamp = Timestamp(Date())
                 )
 
                 viewModelScope.launch {

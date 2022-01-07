@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.runtime.Composable
@@ -43,6 +44,7 @@ fun ProfileScreen(
     val userState = viewModel.user.value
     val userImagesState = viewModel.userImages.value
     val userFavoritesState = viewModel.userFavorites.value
+    val currentUser = viewModel.currentUser.value
     val scaffoldState = rememberScaffoldState()
 
     val selected = remember {
@@ -69,7 +71,7 @@ fun ProfileScreen(
         modifier = Modifier.padding(horizontal = 8.dp),
         bottomBar = { SetupBottomNavBar(navController = navController) },
         floatingActionButton = {
-            if (selected.value == Constants.SELECT_IMAGES) {
+            if (selected.value == Constants.SELECT_IMAGES && userState.uid == currentUser) {
                 FloatingActionButton(
                     onClick = {
                         navController.navigate(Screen.AddEditImageScreen.route + "/-1")
@@ -99,45 +101,71 @@ fun ProfileScreen(
                     .padding(horizontal = 8.dp)
             ) {
                 item {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        OutlinedButton(
-                            onClick = {
-                                navController.navigate(Screen.EditProfileScreen.route)
-                            },
-                            modifier = Modifier.size(40.dp),
-                            shape = CircleShape,
-                            contentPadding = PaddingValues(0.dp),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = Color.LightGray,
-                                backgroundColor = Color.Black
-                            )
+                    if (userState.uid != currentUser) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                imageVector = Icons.Filled.ManageAccounts,
-                                contentDescription = null,
-                            )
+                            OutlinedButton(
+                                onClick = {
+                                    navController.popBackStack()
+                                },
+                                modifier = Modifier.size(40.dp),
+                                shape = CircleShape,
+                                contentPadding = PaddingValues(0.dp),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = Color.LightGray,
+                                    backgroundColor = Color.Black
+                                )
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.ArrowBack,
+                                    contentDescription = null
+                                )
+                            }
                         }
-                        Spacer(modifier = Modifier.width(4.dp))
-                        OutlinedButton(
-                            onClick = {
-                                viewModel.onEvent(ProfileEvent.SignOut)
-                            },
-                            modifier = Modifier.size(40.dp),
-                            shape = CircleShape,
-                            contentPadding = PaddingValues(0.dp),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = Color.LightGray,
-                                backgroundColor = Color.Black
-                            )
+                    } else {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                imageVector = Icons.Filled.Logout,
-                                contentDescription = null,
-                            )
+                            OutlinedButton(
+                                onClick = {
+                                    navController.navigate(Screen.EditProfileScreen.route)
+                                },
+                                modifier = Modifier.size(40.dp),
+                                shape = CircleShape,
+                                contentPadding = PaddingValues(0.dp),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = Color.LightGray,
+                                    backgroundColor = Color.Black
+                                )
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.ManageAccounts,
+                                    contentDescription = null,
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(4.dp))
+                            OutlinedButton(
+                                onClick = {
+                                    viewModel.onEvent(ProfileEvent.SignOut)
+                                },
+                                modifier = Modifier.size(40.dp),
+                                shape = CircleShape,
+                                contentPadding = PaddingValues(0.dp),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = Color.LightGray,
+                                    backgroundColor = Color.Black
+                                )
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Logout,
+                                    contentDescription = null,
+                                )
+                            }
                         }
                     }
                 }

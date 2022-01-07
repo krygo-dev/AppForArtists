@@ -2,10 +2,12 @@ package com.krygodev.appforartists.feature_profile.presentation.profile
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.krygodev.appforartists.core.domain.model.ImageModel
 import com.krygodev.appforartists.core.domain.model.UserModel
+import com.krygodev.appforartists.core.domain.util.Constants
 import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.core.presentation.util.LoadingState
 import com.krygodev.appforartists.core.presentation.util.Screen
@@ -24,7 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val _profileUseCases: ProfileUseCases,
-    private val _authenticationUseCases: AuthenticationUseCases
+    private val _authenticationUseCases: AuthenticationUseCases,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _state = mutableStateOf(LoadingState())
@@ -42,17 +45,24 @@ class ProfileViewModel @Inject constructor(
     private val _userFavorites = mutableStateOf(listOf<ImageModel>())
     val userFavorites: State<List<ImageModel>> = _userFavorites
 
+    val currentUser = mutableStateOf("")
 
     init {
-        onEvent(ProfileEvent.GetUserData)
+        currentUser.value = _profileUseCases.getCurrentUser()!!.uid
+        savedStateHandle.get<String>(Constants.PARAM_USER_UID)?.let { uid ->
+            if (uid != "-1") {
+                onEvent(ProfileEvent.GetUserData(uid))
+            } else {
+                onEvent(ProfileEvent.GetUserData(currentUser.value))
+            }
+        }
     }
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
             is ProfileEvent.GetUserData -> {
                 viewModelScope.launch {
-                    val currentUser = _profileUseCases.getCurrentUser()
-                    _profileUseCases.getUserData(currentUser!!.uid).onEach { result ->
+                    _profileUseCases.getUserData(event.uid).onEach { result ->
                         when (result) {
                             is Resource.Loading -> {
                                 _state.value = state.value.copy(

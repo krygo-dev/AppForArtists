@@ -1,5 +1,6 @@
 package com.krygodev.appforartists.core.presentation.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,7 +37,9 @@ fun BottomNavBar(
             elevation = 5.dp
         ) {
             items.forEach { item ->
-                val selected = item.route == backStackEntry.value?.destination?.route
+                val selected =
+                    item.route == backStackEntry.value?.destination?.route ||
+                            item.route + "?uid={uid}" == backStackEntry.value?.destination?.route
 
                 BottomNavigationItem(
                     selected = selected,
