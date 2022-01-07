@@ -96,7 +96,8 @@ fun EditProfileScreen(
             }
         } else {
             Row(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(8.dp)
             ) {
                 OutlinedButton(
@@ -149,21 +150,6 @@ fun EditProfileScreen(
                     horizontalAlignment = Alignment.Start,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Nazwa użytkownika:")
-                    Spacer(modifier = Modifier.height(4.dp))
-                    OutlinedTextField(
-                        value = userState.username.toString(),
-                        onValueChange = { viewModel.onEvent(EditProfileEvent.UpdateUsername(it)) },
-                        placeholder = { Text(text = "Nazwa użytkownika") },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = Color.Black,
-                            focusedLabelColor = Color.Black,
-                            cursorColor = Color.Black
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
                     Text(text = "Biogram:")
                     Spacer(modifier = Modifier.height(4.dp))
                     OutlinedTextField(

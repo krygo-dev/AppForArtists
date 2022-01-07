@@ -7,5 +7,4 @@ sealed class EditProfileEvent {
     object UpdateUserData: EditProfileEvent()
     data class UpdateBio(val value: String): EditProfileEvent()
     data class UpdatePhoto(val value: Uri): EditProfileEvent()
-    data class UpdateUsername(val value: String): EditProfileEvent()
 }

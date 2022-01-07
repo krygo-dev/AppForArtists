@@ -44,11 +44,6 @@ class EditProfileViewModel @Inject constructor(
                     bio = event.value
                 )
             }
-            is EditProfileEvent.UpdateUsername -> {
-                _user.value = user.value.copy(
-                    username = event.value
-                )
-            }
             is EditProfileEvent.UpdatePhoto -> {
                 viewModelScope.launch {
                     _profileUseCases.uploadUserPhoto(
