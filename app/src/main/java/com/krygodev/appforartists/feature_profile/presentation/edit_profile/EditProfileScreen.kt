@@ -153,7 +153,7 @@ fun EditProfileScreen(
                     Text(text = "Biogram:")
                     Spacer(modifier = Modifier.height(4.dp))
                     OutlinedTextField(
-                        value = userState.bio.toString(),
+                        value = if (userState.bio.isNullOrEmpty()) "" else userState.bio,
                         onValueChange = { viewModel.onEvent(EditProfileEvent.UpdateBio(it)) },
                         placeholder = { Text(text = "Biogram") },
                         colors = TextFieldDefaults.outlinedTextFieldColors(

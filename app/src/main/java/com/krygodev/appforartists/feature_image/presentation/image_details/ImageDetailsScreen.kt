@@ -198,7 +198,7 @@ fun ImageDetailsScreen(
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         Row {
-                            Text(text = "Added by ")
+                            Text(text = "Dodane przez ")
                             Text(
                                 text = "${imageState.authorUsername}",
                                 fontWeight = FontWeight.Bold,
@@ -206,7 +206,7 @@ fun ImageDetailsScreen(
                             )
                         }
                         Row {
-                            Text(text = "Liked by ")
+                            Text(text = "Polubienia ")
                             Text(
                                 text = "${imageState.likes}",
                                 fontWeight = FontWeight.Bold,
