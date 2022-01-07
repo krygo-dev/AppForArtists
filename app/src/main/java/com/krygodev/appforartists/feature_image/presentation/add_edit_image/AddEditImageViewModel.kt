@@ -158,10 +158,11 @@ class AddEditImageViewModel @Inject constructor(
                 }
             }
             is AddEditImageEvent.AddImage -> {
+
                 _image.value = image.value.copy(
                     authorUsername = user.value.username,
                     authorUid = user.value.uid,
-                    timestamp = Timestamp(Date())
+                    timestamp = Timestamp(Date()).toDate().time
                 )
 
                 viewModelScope.launch {

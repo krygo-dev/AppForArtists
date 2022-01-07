@@ -40,7 +40,6 @@ fun AddEditImageScreen(
     val state = viewModel.state.value
     val imageState = viewModel.image.value
     val imageUriState = viewModel.imageUri.value
-    val userState = viewModel.user.value
     val scaffoldState = rememberScaffoldState()
 
     val imageSelected = remember { mutableStateOf(false) }
@@ -188,6 +187,19 @@ fun AddEditImageScreen(
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
                 ) {
+                    OutlinedTextField(
+                        value = if (imageState.description != null) imageState.description.toString() else "",
+                        onValueChange = { viewModel.onEvent(AddEditImageEvent.EnteredDescription(it)) },
+                        placeholder = { Text(text = "Opis") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color.Black,
+                            focusedLabelColor = Color.Black,
+                            cursorColor = Color.Black
+                        ),
+                        maxLines = 7,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
                     LazyVerticalGrid(
                         cells = GridCells.Fixed(3),
                         contentPadding = PaddingValues(8.dp)
@@ -226,20 +238,6 @@ fun AddEditImageScreen(
                             }
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(
-                        value = if (imageState.description != null) imageState.description.toString() else "",
-                        onValueChange = { viewModel.onEvent(AddEditImageEvent.EnteredDescription(it)) },
-                        placeholder = { Text(text = "Opis") },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = Color.Black,
-                            focusedLabelColor = Color.Black,
-                            cursorColor = Color.Black
-                        ),
-                        maxLines = 7,
-                        modifier = Modifier.fillMaxWidth()
-                    )
                 }
             }
         }

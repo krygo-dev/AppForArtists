@@ -1,6 +1,5 @@
 package com.krygodev.appforartists.feature_image.presentation.image_details
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -86,7 +85,6 @@ class ImageDetailsViewModel @Inject constructor(
 
                                 _image.value = result.data!!
                                 _imageLikedBy = image.value.likedBy.toMutableList()
-                                Log.d("TAG", image.value.toString())
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(
@@ -185,8 +183,10 @@ class ImageDetailsViewModel @Inject constructor(
                                 )
 
                                 _userImages.remove(image.value.id)
+                                _userFavorites.remove(image.value.id)
                                 _user.value = user.value.copy(
-                                    images = _userImages
+                                    images = _userImages,
+                                    favorites = _userFavorites
                                 )
                                 onEvent(ImageDetailsEvent.UpdateUserData(user.value))
 
