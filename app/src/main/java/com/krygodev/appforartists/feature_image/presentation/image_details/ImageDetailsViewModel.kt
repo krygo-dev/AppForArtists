@@ -53,6 +53,7 @@ class ImageDetailsViewModel @Inject constructor(
 
     private var _userImages = mutableListOf<String>()
     private var _userFavorites = mutableListOf<String>()
+    private var _imageStarredBy = mutableListOf<String>()
     private var _imageLikedBy = mutableListOf<String>()
 
     init {
@@ -85,6 +86,7 @@ class ImageDetailsViewModel @Inject constructor(
 
                                 _image.value = result.data!!
                                 _imageLikedBy = image.value.likedBy.toMutableList()
+                                _imageStarredBy = image.value.starredBy.toMutableList()
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(
@@ -311,7 +313,7 @@ class ImageDetailsViewModel @Inject constructor(
                     likes = _imageLikedBy.size,
                     likedBy = _imageLikedBy
                 )
-                onEvent(ImageDetailsEvent.UpdateImageLikes)
+                onEvent(ImageDetailsEvent.UpdateImage)
             }
             is ImageDetailsEvent.DislikeImage -> {
                 _imageLikedBy.remove(user.value.uid!!)
@@ -319,9 +321,9 @@ class ImageDetailsViewModel @Inject constructor(
                     likes = _imageLikedBy.size,
                     likedBy = _imageLikedBy
                 )
-                onEvent(ImageDetailsEvent.UpdateImageLikes)
+                onEvent(ImageDetailsEvent.UpdateImage)
             }
-            is ImageDetailsEvent.UpdateImageLikes -> {
+            is ImageDetailsEvent.UpdateImage -> {
                 viewModelScope.launch {
                     _imageUseCases.editImage(image = image.value).onEach { result ->
                         when (result) {
@@ -380,6 +382,18 @@ class ImageDetailsViewModel @Inject constructor(
                         }
                     }.launchIn(this)
                 }
+            }
+            is ImageDetailsEvent.AddStars -> {
+                _imageStarredBy.add(user.value.uid!!)
+                val sum = image.value.starsSum + event.count
+
+                _image.value = image.value.copy(
+                    starredBy = _imageStarredBy,
+                    starsSum = sum,
+                    starsAvg = sum / _imageStarredBy.size
+                )
+
+                onEvent(ImageDetailsEvent.UpdateImage)
             }
         }
     }

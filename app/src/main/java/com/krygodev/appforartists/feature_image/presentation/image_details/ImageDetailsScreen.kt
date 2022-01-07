@@ -10,11 +10,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.ThumbUp
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,6 +43,10 @@ fun ImageDetailsScreen(
     val imageCommentsState = viewModel.imageComments.value
     val commentState = viewModel.comment.value
     val scaffoldState = rememberScaffoldState()
+
+    val starsState = remember {
+        mutableStateListOf(false, false, false, false, false)
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -247,6 +251,44 @@ fun ImageDetailsScreen(
                                     contentDescription = null,
                                     tint = Color.Red
                                 )
+                            }
+                        }
+                    }
+                }
+                item {
+                    if (!imageState.starredBy.contains(userState.uid)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(text = "Oceń ten obraz:")
+                        }
+                    }
+                }
+                item {
+                    if (!imageState.starredBy.contains(userState.uid)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            for (i in 0..4) {
+                                IconButton(
+                                    onClick = {
+                                        for (j in 0..i) {
+                                            starsState[j] = true
+                                        }
+                                        viewModel.onEvent(ImageDetailsEvent.AddStars(count = i + 1))
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = if (starsState[i]) Icons.Outlined.Star else Icons.Outlined.StarBorder,
+                                        contentDescription = null,
+                                        tint = Color.Black,
+                                        modifier = Modifier.size(30.dp)
+                                    )
+                                }
                             }
                         }
                     }

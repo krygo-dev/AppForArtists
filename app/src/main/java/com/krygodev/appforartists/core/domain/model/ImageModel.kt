@@ -9,5 +9,8 @@ data class ImageModel(
     val timestamp: Long? = null,
     val likes: Int = 0,
     val likedBy: List<String> = listOf(),
-    val tags: List<String> = listOf()
+    val tags: List<String> = listOf(),
+    val starredBy: List<String> = listOf(),
+    val starsSum: Int = 0,
+    val starsAvg: Int = 0
 )

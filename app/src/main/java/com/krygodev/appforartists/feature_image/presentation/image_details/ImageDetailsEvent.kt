@@ -11,10 +11,11 @@ sealed class ImageDetailsEvent {
     data class RemoveFromFavorites(val id: String): ImageDetailsEvent()
     data class UpdateUserData(val user: UserModel): ImageDetailsEvent()
     data class EnteredCommentContent(val content: String): ImageDetailsEvent()
+    data class AddStars(val count: Int): ImageDetailsEvent()
     object LikeImage: ImageDetailsEvent()
     object DislikeImage: ImageDetailsEvent()
     object AddComment: ImageDetailsEvent()
     object DeleteImage: ImageDetailsEvent()
     object GetUserData: ImageDetailsEvent()
-    object UpdateImageLikes: ImageDetailsEvent()
+    object UpdateImage: ImageDetailsEvent()
 }
