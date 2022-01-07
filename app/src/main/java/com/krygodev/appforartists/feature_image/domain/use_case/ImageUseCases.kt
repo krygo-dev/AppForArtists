@@ -6,6 +6,6 @@ data class ImageUseCases(
     val editImage: EditImage,
     val deleteImage: DeleteImage,
     val getImageComments: GetImageComments,
-    val addOrEditComment: AddOrEditComment,
+    val addComment: AddComment,
     val deleteComment: DeleteComment
 )

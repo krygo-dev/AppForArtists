@@ -102,7 +102,7 @@ object AppModule {
             editImage = EditImage(repository),
             deleteImage = DeleteImage(repository),
             getImageComments = GetImageComments(repository),
-            addOrEditComment = AddOrEditComment(repository),
+            addComment = AddComment(repository),
             deleteComment = DeleteComment(repository)
         )
     }

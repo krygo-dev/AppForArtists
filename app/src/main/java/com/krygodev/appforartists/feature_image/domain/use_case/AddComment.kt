@@ -6,7 +6,7 @@ import com.krygodev.appforartists.feature_image.domain.repository.ImageRepositor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class AddOrEditComment(
+class AddComment(
     private val _repository: ImageRepository
 ) {
 

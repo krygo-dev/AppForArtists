@@ -220,7 +220,7 @@ class ImageDetailsViewModel @Inject constructor(
                 )
 
                 viewModelScope.launch {
-                    _imageUseCases.addOrEditComment(
+                    _imageUseCases.addComment(
                         comment = comment.value,
                         id = image.value.id!!
                     ).onEach { result ->

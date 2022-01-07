@@ -95,6 +95,14 @@ class ImageRepositoryImpl(
                 .await()
                 .also {
                     deleteImageFromStorage(imageId = image.id!!)
+                    _firebaseFirestore.collection(Constants.IMAGES_COLLECTION)
+                        .document(image.id!!)
+                        .collection(Constants.COMMENTS_COLLECTION)
+                        .get()
+                        .await()
+                        .documents.forEach { doc ->
+                            doc.reference.delete()
+                        }
                 }
 
             emit(Resource.Success(result))
