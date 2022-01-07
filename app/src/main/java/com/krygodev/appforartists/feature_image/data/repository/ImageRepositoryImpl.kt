@@ -131,18 +131,16 @@ class ImageRepositoryImpl(
         }
     }
 
-    override fun addOrEditComment(comment: CommentModel, id: String): Flow<Resource<Void>> = flow {
+    override fun addComment(comment: CommentModel, id: String): Flow<Resource<Void>> = flow {
         emit(Resource.Loading())
 
         try {
-            if (comment.id.isNullOrEmpty()) {
-                val ref = _firebaseFirestore.collection(Constants.IMAGES_COLLECTION)
-                    .document(id)
-                    .collection(Constants.COMMENTS_COLLECTION)
-                    .document()
+            val ref = _firebaseFirestore.collection(Constants.IMAGES_COLLECTION)
+                .document(id)
+                .collection(Constants.COMMENTS_COLLECTION)
+                .document()
 
-                comment.id = ref.id
-            }
+            comment.id = ref.id
 
             val result = _firebaseFirestore.collection(Constants.IMAGES_COLLECTION)
                 .document(id)

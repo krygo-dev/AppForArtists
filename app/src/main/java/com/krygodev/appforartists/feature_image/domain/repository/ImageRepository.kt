@@ -18,7 +18,7 @@ interface ImageRepository {
 
     fun getImageComments(id: String) : Flow<Resource<List<CommentModel>>>
 
-    fun addOrEditComment(comment: CommentModel, id: String) : Flow<Resource<Void>>
+    fun addComment(comment: CommentModel, id: String) : Flow<Resource<Void>>
 
     fun deleteComment(comment: CommentModel, id: String) : Flow<Resource<Void>>
 }

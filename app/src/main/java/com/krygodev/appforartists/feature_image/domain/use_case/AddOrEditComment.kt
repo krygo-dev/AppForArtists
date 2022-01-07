@@ -16,7 +16,7 @@ class AddOrEditComment(
                 emit(Resource.Error("Komentarz musi zawierać treść!"))
             }
         }
-        return _repository.addOrEditComment(comment = comment, id = id)
+        return _repository.addComment(comment = comment, id = id)
     }
 
 }
