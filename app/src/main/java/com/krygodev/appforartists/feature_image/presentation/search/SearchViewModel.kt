@@ -2,6 +2,7 @@ package com.krygodev.appforartists.feature_image.presentation.search
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.capitalize
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.krygodev.appforartists.core.domain.model.ImageModel
@@ -15,12 +16,13 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val _imageUseCases: ImageUseCases
-): ViewModel() {
+) : ViewModel() {
 
     private val _state = mutableStateOf(LoadingState())
     val state: State<LoadingState> = _state
@@ -28,7 +30,7 @@ class SearchViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private val _images = mutableStateOf(listOf(ImageModel()))
+    private val _images = mutableStateOf(listOf<ImageModel>())
     val images: State<List<ImageModel>> = _images
 
     private val _searchTag = mutableStateOf("")
@@ -37,7 +39,8 @@ class SearchViewModel @Inject constructor(
     fun onEvent(event: SearchEvent) {
         when (event) {
             is SearchEvent.EnteredTag -> {
-                _searchTag.value = event.tag
+                _searchTag.value = event.tag.replace(" ", "")
+                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
             }
             is SearchEvent.SubmitSearch -> {
                 viewModelScope.launch {

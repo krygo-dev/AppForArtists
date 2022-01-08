@@ -123,7 +123,7 @@ fun ImageDetailsScreen(
                     ) {
                         OutlinedButton(
                             onClick = {
-                                navController.navigate(Screen.ProfileScreen.route)
+                                navController.popBackStack()
                             },
                             modifier = Modifier.size(40.dp),
                             shape = CircleShape,
