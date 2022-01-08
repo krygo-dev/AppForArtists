@@ -10,6 +10,8 @@ interface ImageRepository {
 
     fun getImageById(id: String) : Flow<Resource<ImageModel>>
 
+    fun getImagesByTag(tag: String) : Flow<Resource<List<ImageModel>>>
+
     fun addImage(image: ImageModel, imageUri: Uri) : Flow<Resource<String>>
 
     fun editImage(image: ImageModel) : Flow<Resource<Void>>

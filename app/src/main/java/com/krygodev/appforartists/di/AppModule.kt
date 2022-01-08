@@ -98,6 +98,7 @@ object AppModule {
     fun provideImageUseCases(repository: ImageRepository): ImageUseCases {
         return ImageUseCases(
             getImageById = GetImageById(repository),
+            getImagesByTag = GetImagesByTag(repository),
             addImage = AddImage(repository),
             editImage = EditImage(repository),
             deleteImage = DeleteImage(repository),

@@ -43,6 +43,27 @@ class ImageRepositoryImpl(
         }
     }
 
+    override fun getImagesByTag(tag: String): Flow<Resource<List<ImageModel>>> = flow {
+        emit(Resource.Loading())
+
+        try {
+            val result = _firebaseFirestore.collection(Constants.IMAGES_COLLECTION)
+                .whereArrayContains("tags", tag)
+                .get()
+                .await()
+                .toObjects(ImageModel::class.java)
+
+            emit(Resource.Success(result))
+
+        } catch (e: HttpException) {
+            emit(Resource.Error(message = "Coś poszło nie tak!"))
+        } catch (e: IOException) {
+            emit(Resource.Error(message = "Nie udało się połączyć z serwerem, sprawdź połączenie z internetem"))
+        } catch (e: FirebaseFirestoreException) {
+            emit(Resource.Error(message = e.localizedMessage!!))
+        }
+    }
+
     override fun addImage(image: ImageModel, imageUri: Uri): Flow<Resource<String>> = flow {
         emit(Resource.Loading())
 
