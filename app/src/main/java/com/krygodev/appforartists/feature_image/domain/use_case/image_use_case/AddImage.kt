@@ -1,4 +1,4 @@
-package com.krygodev.appforartists.feature_image.domain.use_case
+package com.krygodev.appforartists.feature_image.domain.use_case.image_use_case
 
 import android.net.Uri
 import com.krygodev.appforartists.core.domain.model.ImageModel

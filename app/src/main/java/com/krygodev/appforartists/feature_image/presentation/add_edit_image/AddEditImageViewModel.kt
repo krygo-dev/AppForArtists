@@ -14,7 +14,7 @@ import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.core.presentation.util.LoadingState
 import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
-import com.krygodev.appforartists.feature_image.domain.use_case.ImageUseCases
+import com.krygodev.appforartists.feature_image.domain.use_case.image_use_case.ImageUseCases
 import com.krygodev.appforartists.feature_profile.domain.use_case.ProfileUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay

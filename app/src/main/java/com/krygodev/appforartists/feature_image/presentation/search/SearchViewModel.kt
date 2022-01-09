@@ -2,14 +2,13 @@ package com.krygodev.appforartists.feature_image.presentation.search
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.text.capitalize
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.krygodev.appforartists.core.domain.model.ImageModel
 import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.core.presentation.util.LoadingState
 import com.krygodev.appforartists.core.presentation.util.UIEvent
-import com.krygodev.appforartists.feature_image.domain.use_case.ImageUseCases
+import com.krygodev.appforartists.feature_image.domain.use_case.image_use_case.ImageUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
