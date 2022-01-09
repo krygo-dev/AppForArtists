@@ -28,7 +28,7 @@ class HomeRepositoryImpl(
                 .await()
                 .toObjects(ImageModel::class.java)
 
-            val index = Random.nextInt(0..result.size)
+            val index = Random.nextInt(0 until result.size)
 
             emit(Resource.Success(result[index]!!))
 

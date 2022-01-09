@@ -7,5 +7,8 @@ data class UserModel(
     val userPhotoUrl: String? = null,
     val bio: String? = null,
     val images: List<String> = listOf(),
-    val favorites: List<String> = listOf()
+    val favorites: List<String> = listOf(),
+    val starredBy: List<String> = listOf(),
+    val starsSum: Int = 0,
+    val starsAvg: Int = 0
 )

@@ -1,4 +1,4 @@
-package com.krygodev.appforartists.core.presentation.components
+package com.krygodev.appforartists.feature_image.presentation.home.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -19,13 +19,14 @@ import com.krygodev.appforartists.core.domain.model.ImageModel
 import com.krygodev.appforartists.core.presentation.util.Screen
 
 @Composable
-fun ImageListItem(
+fun ImageRowItem(
     image: ImageModel,
     navController: NavController
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
+            .width(300.dp)
+            .padding(4.dp)
             .clickable {
                 navController.navigate(Screen.ImageDetailsScreen.route + "/${image.id}")
             },
@@ -60,5 +61,4 @@ fun ImageListItem(
             }
         }
     }
-    Spacer(modifier = Modifier.height(8.dp))
 }

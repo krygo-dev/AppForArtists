@@ -3,6 +3,7 @@ package com.krygodev.appforartists.feature_image.presentation.image_details
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -30,6 +31,8 @@ import com.krygodev.appforartists.core.presentation.util.UIEvent
 import com.krygodev.appforartists.feature_image.presentation.image_details.components.CommentsListItem
 import com.krygodev.appforartists.feature_image.presentation.image_details.components.TagListItem
 import kotlinx.coroutines.flow.collectLatest
+import java.text.SimpleDateFormat
+import java.util.*
 
 @ExperimentalFoundationApi
 @Composable
@@ -206,7 +209,10 @@ fun ImageDetailsScreen(
                             Text(
                                 text = "${imageState.authorUsername}",
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black
+                                color = Color.Black,
+                                modifier = Modifier.clickable {
+                                    navController.navigate(Screen.ProfileScreen.route + "?uid=${imageState.authorUid}")
+                                }
                             )
                         }
                         Row {
@@ -254,6 +260,22 @@ fun ImageDetailsScreen(
                             }
                         }
                     }
+                }
+                item {
+                    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "Data dodania: ")
+                        Text(
+                            text = sdf.format(Date(imageState.timestamp!!)),
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
                 item {
                     if (!imageState.starredBy.contains(userState.uid)) {

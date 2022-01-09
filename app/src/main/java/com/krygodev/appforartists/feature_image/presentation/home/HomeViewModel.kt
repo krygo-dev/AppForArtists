@@ -1,5 +1,6 @@
 package com.krygodev.appforartists.feature_image.presentation.home
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -66,6 +67,7 @@ class HomeViewModel @Inject constructor(
                         )
 
                         _dailyImage.value = result.data!!
+                        Log.e("DAILY", dailyImage.value.toString())
                     }
                     is Resource.Error -> {
                         _state.value = state.value.copy(
@@ -99,6 +101,7 @@ class HomeViewModel @Inject constructor(
                         )
 
                         _mostLikedImages.value = result.data!!
+                        Log.e("LIKED", mostLikedImages.value.toString())
                     }
                     is Resource.Error -> {
                         _state.value = state.value.copy(
@@ -132,6 +135,7 @@ class HomeViewModel @Inject constructor(
                         )
 
                         _bestRatedImages.value = result.data!!
+                        Log.e("RATED", bestRatedImages.value.toString())
                     }
                     is Resource.Error -> {
                         _state.value = state.value.copy(
@@ -165,6 +169,7 @@ class HomeViewModel @Inject constructor(
                         )
 
                         _recentlyAddedImages.value = result.data!!
+                        Log.e("ADDED", recentlyAddedImages.value.toString())
                     }
                     is Resource.Error -> {
                         _state.value = state.value.copy(
