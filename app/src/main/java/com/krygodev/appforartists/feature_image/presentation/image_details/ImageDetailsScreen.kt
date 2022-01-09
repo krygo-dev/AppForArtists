@@ -185,7 +185,7 @@ fun ImageDetailsScreen(
                 item {
                     Box(
                         modifier = Modifier
-                            .height(250.dp)
+                            .height(300.dp)
                             .padding(top = 16.dp, bottom = 4.dp)
                     ) {
                         Image(
@@ -193,7 +193,7 @@ fun ImageDetailsScreen(
                                 data = imageState.url,
                             ),
                             contentDescription = null,
-                            contentScale = ContentScale.Crop,
+                            contentScale = ContentScale.Fit,
                             modifier = Modifier.fillMaxSize()
                         )
                     }
