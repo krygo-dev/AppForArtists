@@ -390,7 +390,7 @@ class ImageDetailsViewModel @Inject constructor(
                 _image.value = image.value.copy(
                     starredBy = _imageStarredBy,
                     starsSum = sum,
-                    starsAvg = sum / _imageStarredBy.size
+                    starsAvg = sum / _imageStarredBy.size.toFloat()
                 )
 
                 onEvent(ImageDetailsEvent.UpdateImage)

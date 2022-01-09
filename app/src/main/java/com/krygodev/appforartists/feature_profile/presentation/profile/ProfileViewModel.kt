@@ -47,6 +47,8 @@ class ProfileViewModel @Inject constructor(
 
     val currentUser = mutableStateOf("")
 
+    private var _userStarredBy = mutableListOf<String>()
+
     init {
         currentUser.value = _profileUseCases.getCurrentUser()!!.uid
         savedStateHandle.get<String>(Constants.PARAM_USER_UID)?.let { uid ->
@@ -79,6 +81,7 @@ class ProfileViewModel @Inject constructor(
                                 )
 
                                 _user.value = result.data!!
+                                _userStarredBy = user.value.starredBy.toMutableList()
 
                                 onEvent(ProfileEvent.GetUserImages)
                             }
@@ -179,6 +182,48 @@ class ProfileViewModel @Inject constructor(
                                 _eventFlow.emit(UIEvent.ShowSnackbar("Wylogowano!"))
                                 delay(500)
                                 _eventFlow.emit(UIEvent.NavigateTo(Screen.StartupScreen.route))
+                            }
+                            is Resource.Error -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = result.message!!,
+                                    result = null
+                                )
+                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                            }
+                        }
+                    }.launchIn(this)
+                }
+            }
+            is ProfileEvent.AddStars -> {
+                _userStarredBy.add(currentUser.value)
+                val sum = user.value.starsSum + event.count
+
+                _user.value = user.value.copy(
+                    starredBy = _userStarredBy,
+                    starsSum = sum,
+                    starsAvg = sum / _userStarredBy.size.toFloat()
+                )
+
+                onEvent(ProfileEvent.UpdateUserData)
+            }
+            is ProfileEvent.UpdateUserData -> {
+                viewModelScope.launch {
+                    _profileUseCases.setOrUpdateUserData(user = user.value).onEach { result ->
+                        when (result) {
+                            is Resource.Loading -> {
+                                _state.value = state.value.copy(
+                                    isLoading = true,
+                                    error = "",
+                                    result = null
+                                )
+                            }
+                            is Resource.Success -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = "",
+                                    result = result.data
+                                )
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(

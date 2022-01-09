@@ -10,5 +10,5 @@ data class UserModel(
     val favorites: List<String> = listOf(),
     val starredBy: List<String> = listOf(),
     val starsSum: Int = 0,
-    val starsAvg: Int = 0
+    val starsAvg: Float = 0f
 )

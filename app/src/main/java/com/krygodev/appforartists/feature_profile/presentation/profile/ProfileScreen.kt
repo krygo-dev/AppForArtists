@@ -9,14 +9,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.ManageAccounts
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.outlined.StarBorder
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +29,7 @@ import com.krygodev.appforartists.core.presentation.components.ImageListItem
 import com.krygodev.appforartists.core.presentation.components.SetupBottomNavBar
 import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
+import com.krygodev.appforartists.feature_image.presentation.image_details.ImageDetailsEvent
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -49,6 +46,10 @@ fun ProfileScreen(
 
     val selected = remember {
         mutableStateOf(Constants.SELECT_IMAGES)
+    }
+
+    val starsState = remember {
+        mutableStateListOf(false, false, false, false, false)
     }
 
     LaunchedEffect(key1 = true) {
@@ -186,11 +187,31 @@ fun ProfileScreen(
                             modifier = Modifier.size(100.dp)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "${userState.username}",
-                            fontSize = 30.sp,
-                            fontWeight = FontWeight.W700
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "${userState.username}",
+                                fontSize = 30.sp,
+                                fontWeight = FontWeight.W700
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Row {
+                                Icon(
+                                    imageVector = Icons.Filled.Star,
+                                    contentDescription = null,
+                                    tint = Color.Red
+                                )
+                                Spacer(modifier = Modifier.width(2.dp))
+                                Text(
+                                    text = "${userState.starsAvg}",
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Black
+                                )
+                            }
+                        }
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
@@ -205,6 +226,45 @@ fun ProfileScreen(
                                 text = "${userState.bio}",
                                 maxLines = 7
                             )
+                        }
+                        Divider()
+                    }
+                }
+                item {
+                    if (!userState.starredBy.contains(currentUser) && userState.uid != currentUser) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(text = "Oceń tego użytkownika:")
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                for (i in 0..4) {
+                                    IconButton(
+                                        onClick = {
+                                            for (j in 0..i) {
+                                                starsState[j] = true
+                                            }
+                                            viewModel.onEvent(ProfileEvent.AddStars(count = i + 1))
+                                        }
+                                    ) {
+                                        Icon(
+                                            imageVector = if (starsState[i]) Icons.Outlined.Star else Icons.Outlined.StarBorder,
+                                            contentDescription = null,
+                                            tint = Color.Black,
+                                            modifier = Modifier.size(30.dp)
+                                        )
+                                    }
+                                }
+                            }
                         }
                         Divider()
                     }
