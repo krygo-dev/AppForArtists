@@ -29,7 +29,6 @@ import com.krygodev.appforartists.core.presentation.components.ImageListItem
 import com.krygodev.appforartists.core.presentation.components.SetupBottomNavBar
 import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
-import com.krygodev.appforartists.feature_image.presentation.image_details.ImageDetailsEvent
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable

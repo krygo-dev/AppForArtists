@@ -23,4 +23,8 @@ object Constants {
     // Images in profile selections
     const val SELECT_IMAGES = "images"
     const val SELECT_FAVORITES = "favorites"
+
+    // Search by selections
+    const val SEARCH_TAG = "tag"
+    const val SEARCH_USERNAME = "username"
 }

@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.krygodev.appforartists.core.domain.model.ImageModel
+import com.krygodev.appforartists.core.domain.model.UserModel
+import com.krygodev.appforartists.core.domain.util.Constants
 import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.core.presentation.util.LoadingState
 import com.krygodev.appforartists.core.presentation.util.UIEvent
@@ -32,47 +34,91 @@ class SearchViewModel @Inject constructor(
     private val _images = mutableStateOf(listOf<ImageModel>())
     val images: State<List<ImageModel>> = _images
 
-    private val _searchTag = mutableStateOf("")
-    val searchTag: State<String> = _searchTag
+    private val _users = mutableStateOf(listOf<UserModel>())
+    val users: State<List<UserModel>> = _users
+
+    private val _query = mutableStateOf("")
+    val query: State<String> = _query
 
     fun onEvent(event: SearchEvent) {
         when (event) {
-            is SearchEvent.EnteredTag -> {
-                _searchTag.value = event.tag.replace(" ", "")
+            is SearchEvent.EnteredQuery -> {
+                _query.value = event.query.replace(" ", "")
                     .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
             }
             is SearchEvent.SubmitSearch -> {
-                viewModelScope.launch {
-                    _imageUseCases.getImagesByTag(tag = searchTag.value).onEach { result ->
-                        when (result) {
-                            is Resource.Loading -> {
-                                _state.value = state.value.copy(
-                                    isLoading = true,
-                                    error = "",
-                                    result = null
-                                )
-                            }
-                            is Resource.Success -> {
-                                _state.value = state.value.copy(
-                                    isLoading = false,
-                                    error = "",
-                                    result = result.data
-                                )
-
-                                _images.value = result.data!!
-                            }
-                            is Resource.Error -> {
-                                _state.value = state.value.copy(
-                                    isLoading = false,
-                                    error = result.message!!,
-                                    result = null
-                                )
-                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
-                            }
-                        }
-                    }.launchIn(this)
+                if (event.selection == Constants.SEARCH_TAG) {
+                    searchForImagesByTag(tag = query.value)
+                } else {
+                    searchForUsersByUsername(username = query.value)
                 }
             }
+        }
+    }
+
+    private fun searchForUsersByUsername(username: String) {
+        viewModelScope.launch {
+            _imageUseCases.getUsersByUsername(username = username).onEach { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = state.value.copy(
+                            isLoading = true,
+                            error = "",
+                            result = null
+                        )
+                    }
+                    is Resource.Success -> {
+                        _state.value = state.value.copy(
+                            isLoading = false,
+                            error = "",
+                            result = result.data
+                        )
+
+                        _users.value = result.data!!
+                    }
+                    is Resource.Error -> {
+                        _state.value = state.value.copy(
+                            isLoading = false,
+                            error = result.message!!,
+                            result = null
+                        )
+                        _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                    }
+                }
+            }.launchIn(this)
+        }
+    }
+
+    private fun searchForImagesByTag(tag: String) {
+        viewModelScope.launch {
+            _imageUseCases.getImagesByTag(tag = tag).onEach { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = state.value.copy(
+                            isLoading = true,
+                            error = "",
+                            result = null
+                        )
+                    }
+                    is Resource.Success -> {
+                        _state.value = state.value.copy(
+                            isLoading = false,
+                            error = "",
+                            result = result.data
+                        )
+
+                        _images.value = result.data!!
+                    }
+                    is Resource.Error -> {
+                        _state.value = state.value.copy(
+                            isLoading = false,
+                            error = result.message!!,
+                            result = null
+                        )
+                        _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                    }
+                }
+            }.launchIn(this)
         }
     }
 }
