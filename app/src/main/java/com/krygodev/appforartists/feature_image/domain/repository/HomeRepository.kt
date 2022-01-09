@@ -1,6 +1,7 @@
 package com.krygodev.appforartists.feature_image.domain.repository
 
 import com.krygodev.appforartists.core.domain.model.ImageModel
+import com.krygodev.appforartists.core.domain.model.UserModel
 import com.krygodev.appforartists.core.domain.util.Resource
 import kotlinx.coroutines.flow.Flow
 
@@ -13,4 +14,6 @@ interface HomeRepository {
     fun getBestRatedImages(limit: Int) : Flow<Resource<List<ImageModel>>>
 
     fun getRecentlyAddedImages(limit: Int) : Flow<Resource<List<ImageModel>>>
+
+    fun getBestRatedUsers(limit: Int) : Flow<Resource<List<UserModel>>>
 }

@@ -26,6 +26,7 @@ import com.krygodev.appforartists.core.presentation.components.SetupBottomNavBar
 import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
 import com.krygodev.appforartists.feature_image.presentation.home.components.ImageRowItem
+import com.krygodev.appforartists.feature_image.presentation.home.components.ProfileRowItem
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -35,9 +36,10 @@ fun HomeScreen(
 ) {
     val state = viewModel.state.value
     val dailyImageState = viewModel.dailyImage.value
-    val mostLikedImages = viewModel.mostLikedImages.value
-    val bestRatedImages = viewModel.bestRatedImages.value
-    val recentlyAddedImages = viewModel.recentlyAddedImages.value
+    val mostLikedImagesState = viewModel.mostLikedImages.value
+    val bestRatedImagesState = viewModel.bestRatedImages.value
+    val recentlyAddedImagesState = viewModel.recentlyAddedImages.value
+    val bestRatedProfilesState = viewModel.bestRatedProfiles.value
     val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(key1 = true) {
@@ -145,7 +147,7 @@ fun HomeScreen(
                 item {
                     Text(text = "Najbardziej lubiane!", fontSize = 20.sp)
                     LazyRow(modifier = Modifier.padding(vertical = 8.dp)) {
-                        items(mostLikedImages) { mostLikedImage ->
+                        items(mostLikedImagesState) { mostLikedImage ->
                             ImageRowItem(image = mostLikedImage, navController = navController)
                         }
                     }
@@ -154,7 +156,7 @@ fun HomeScreen(
                 item {
                     Text(text = "Najwyżej oceniane!", fontSize = 20.sp)
                     LazyRow(modifier = Modifier.padding(vertical = 8.dp)) {
-                        items(bestRatedImages) { bestRatedImage ->
+                        items(bestRatedImagesState) { bestRatedImage ->
                             ImageRowItem(image = bestRatedImage, navController = navController)
                         }
                     }
@@ -163,8 +165,20 @@ fun HomeScreen(
                 item {
                     Text(text = "Ostatnio dodane!", fontSize = 20.sp)
                     LazyRow(modifier = Modifier.padding(vertical = 8.dp)) {
-                        items(recentlyAddedImages) { recentlyAddedImage ->
+                        items(recentlyAddedImagesState) { recentlyAddedImage ->
                             ImageRowItem(image = recentlyAddedImage, navController = navController)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+                item {
+                    Text(text = "Najlepiej oceniane profile!", fontSize = 20.sp)
+                    LazyRow(modifier = Modifier.padding(vertical = 8.dp)) {
+                        items(bestRatedProfilesState) { bestRatedProfile ->
+                            ProfileRowItem(
+                                profile = bestRatedProfile,
+                                navController = navController
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.height(16.dp))

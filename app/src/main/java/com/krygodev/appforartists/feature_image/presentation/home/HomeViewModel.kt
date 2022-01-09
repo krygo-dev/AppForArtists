@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.krygodev.appforartists.core.domain.model.ImageModel
+import com.krygodev.appforartists.core.domain.model.UserModel
 import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.core.presentation.util.LoadingState
 import com.krygodev.appforartists.core.presentation.util.UIEvent
@@ -41,11 +42,15 @@ class HomeViewModel @Inject constructor(
     private val _recentlyAddedImages = mutableStateOf(listOf<ImageModel>())
     val recentlyAddedImages: State<List<ImageModel>> = _recentlyAddedImages
 
+    private val _bestRatedProfiles = mutableStateOf(listOf<UserModel>())
+    val bestRatedProfiles: State<List<UserModel>> = _bestRatedProfiles
+
     init {
         getDailyImage()
         getMostLikedImages()
         getBestRatedImages()
         getRecentlyAddedImages()
+        getBestRatedProfiles()
     }
 
     private fun getDailyImage() {
@@ -170,6 +175,40 @@ class HomeViewModel @Inject constructor(
 
                         _recentlyAddedImages.value = result.data!!
                         Log.e("ADDED", recentlyAddedImages.value.toString())
+                    }
+                    is Resource.Error -> {
+                        _state.value = state.value.copy(
+                            isLoading = false,
+                            error = result.message!!,
+                            result = null
+                        )
+                        _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                    }
+                }
+            }.launchIn(this)
+        }
+    }
+
+    private fun getBestRatedProfiles() {
+        viewModelScope.launch {
+            _homeUseCases.getBestRatedUsers(limit = 3).onEach { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = state.value.copy(
+                            isLoading = true,
+                            error = "",
+                            result = null
+                        )
+                    }
+                    is Resource.Success -> {
+                        _state.value = state.value.copy(
+                            isLoading = false,
+                            error = "",
+                            result = result.data
+                        )
+
+                        _bestRatedProfiles.value = result.data!!
+                        Log.e("RATED", bestRatedProfiles.value.toString())
                     }
                     is Resource.Error -> {
                         _state.value = state.value.copy(

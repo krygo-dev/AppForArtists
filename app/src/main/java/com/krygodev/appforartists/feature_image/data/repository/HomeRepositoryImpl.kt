@@ -5,6 +5,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
 import com.krygodev.appforartists.core.domain.model.ImageModel
+import com.krygodev.appforartists.core.domain.model.UserModel
 import com.krygodev.appforartists.core.domain.util.Constants
 import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.feature_image.domain.repository.HomeRepository
@@ -95,6 +96,28 @@ class HomeRepositoryImpl(
                 .get()
                 .await()
                 .toObjects(ImageModel::class.java)
+
+            emit(Resource.Success(result))
+
+        } catch (e: HttpException) {
+            emit(Resource.Error(message = "Coś poszło nie tak!"))
+        } catch (e: IOException) {
+            emit(Resource.Error(message = "Nie udało się połączyć z serwerem, sprawdź połączenie z internetem"))
+        } catch (e: FirebaseFirestoreException) {
+            emit(Resource.Error(message = e.localizedMessage!!))
+        }
+    }
+
+    override fun getBestRatedUsers(limit: Int): Flow<Resource<List<UserModel>>> = flow {
+        emit(Resource.Loading())
+
+        try {
+            val result = _firebaseFirestore.collection(Constants.USER_COLLECTION)
+                .orderBy("starsAvg", Query.Direction.DESCENDING)
+                .limit(limit.toLong())
+                .get()
+                .await()
+                .toObjects(UserModel::class.java)
 
             emit(Resource.Success(result))
 

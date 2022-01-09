@@ -126,7 +126,8 @@ object AppModule {
             getRandomImage = GetRandomImage(repository),
             getMostLikedImages = GetMostLikedImages(repository),
             getBestRatedImages = GetBestRatedImages(repository),
-            getRecentlyAddedImages = GetRecentlyAddedImages(repository)
+            getRecentlyAddedImages = GetRecentlyAddedImages(repository),
+            getBestRatedUsers = GetBestRatedUsers(repository)
         )
     }
 }

@@ -4,5 +4,6 @@ data class HomeUseCases(
     val getRandomImage: GetRandomImage,
     val getMostLikedImages: GetMostLikedImages,
     val getBestRatedImages: GetBestRatedImages,
-    val getRecentlyAddedImages: GetRecentlyAddedImages
+    val getRecentlyAddedImages: GetRecentlyAddedImages,
+    val getBestRatedUsers: GetBestRatedUsers
 )
