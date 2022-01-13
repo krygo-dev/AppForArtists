@@ -12,7 +12,7 @@ class SendMessage(
 ) {
 
     operator fun invoke(chatroom: ChatroomModel, message: MessageModel): Flow<Resource<Void>> {
-        if (message.message.isEmpty()) {
+        if (message.message!!.isEmpty()) {
             return flow {
                 emit(Resource.Error("Nie można wysłać pustej wiadomości!"))
             }

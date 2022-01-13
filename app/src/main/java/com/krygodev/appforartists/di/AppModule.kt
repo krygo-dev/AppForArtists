@@ -149,8 +149,8 @@ object AppModule {
     @Singleton
     fun provideChatUseCases(repository: ChatRepository): ChatUseCases {
         return ChatUseCases(
-            createChatroom = CreateChatroom(repository),
             getUserChatrooms = GetUserChatrooms(repository),
+            getChatroomByUsersUid = GetChatroomByUsersUid(repository),
             getMessages = GetMessages(repository),
             sendMessage = SendMessage(repository)
         )

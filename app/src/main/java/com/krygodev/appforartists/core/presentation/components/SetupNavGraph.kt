@@ -99,9 +99,17 @@ fun NavGraphBuilder.homeNavGraph(
             ChatroomsScreen(navController = navController)
         }
         composable(
-            route = Screen.ChatScreen.route + "/{id}",
+            route = Screen.ChatScreen.route + "/{id}/{uid}/{uid2}",
             arguments = listOf(
                 navArgument(name = Constants.PARAM_CHAT_ID) {
+                    type = NavType.StringType
+                    defaultValue = "-1"
+                },
+                navArgument(name = Constants.PARAM_USER_UID) {
+                    type = NavType.StringType
+                    defaultValue = "-1"
+                },
+                navArgument(name = Constants.PARAM_SECOND_USER_UID) {
                     type = NavType.StringType
                     defaultValue = "-1"
                 }
