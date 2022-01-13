@@ -15,6 +15,6 @@ sealed class BottomNavItem(
 ) {
     object Home : BottomNavItem(Screen.HomeScreen.route, Icons.Filled.Home, Icons.Outlined.Home)
     object Search : BottomNavItem(Screen.SearchScreen.route, Icons.Filled.Search, Icons.Outlined.Search)
-    object Messages : BottomNavItem(Screen.MessagesScreen.route, Icons.Filled.Chat, Icons.Outlined.Chat)
+    object Chatrooms : BottomNavItem(Screen.ChatroomsScreen.route, Icons.Filled.Chat, Icons.Outlined.Chat)
     object Profile : BottomNavItem(Screen.ProfileScreen.route, Icons.Filled.Person, Icons.Outlined.Person)
 }

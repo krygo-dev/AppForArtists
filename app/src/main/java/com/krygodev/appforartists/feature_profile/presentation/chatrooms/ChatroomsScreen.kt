@@ -1,4 +1,4 @@
-package com.krygodev.appforartists.feature_profile.presentation.chat
+package com.krygodev.appforartists.feature_profile.presentation.chatrooms
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,13 +10,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.krygodev.appforartists.core.presentation.components.SetupBottomNavBar
 
 @Composable
-fun ChatScreen(
-    navController: NavController
+fun ChatroomsScreen(
+    navController: NavController,
+    viewModel: ChatroomsViewModel = hiltViewModel()
 ) {
+    val state = viewModel.state.value
+    val chatroomsState = viewModel.chatrooms.value
     val scaffoldState = rememberScaffoldState()
 
     Scaffold(
@@ -28,7 +32,7 @@ fun ChatScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "Chat Screen")
+            Text(text = "Chatrooms Screen")
         }
     }
 }

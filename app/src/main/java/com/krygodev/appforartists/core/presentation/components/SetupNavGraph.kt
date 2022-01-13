@@ -15,7 +15,8 @@ import com.krygodev.appforartists.feature_image.presentation.home.HomeScreen
 import com.krygodev.appforartists.feature_image.presentation.image_details.ImageDetailsScreen
 import com.krygodev.appforartists.feature_image.presentation.search.SearchScreen
 import com.krygodev.appforartists.feature_profile.presentation.edit_profile.EditProfileScreen
-import com.krygodev.appforartists.feature_profile.presentation.chat.MessagesScreen
+import com.krygodev.appforartists.feature_profile.presentation.chat.ChatScreen
+import com.krygodev.appforartists.feature_profile.presentation.chatrooms.ChatroomsScreen
 import com.krygodev.appforartists.feature_profile.presentation.profile.ProfileScreen
 
 @ExperimentalFoundationApi
@@ -94,8 +95,19 @@ fun NavGraphBuilder.homeNavGraph(
         composable(route = Screen.EditProfileScreen.route) {
             EditProfileScreen(navController = navController)
         }
-        composable(route = Screen.MessagesScreen.route) {
-            MessagesScreen(navController = navController)
+        composable(route = Screen.ChatroomsScreen.route) {
+            ChatroomsScreen(navController = navController)
+        }
+        composable(
+            route = Screen.ChatScreen.route + "/{id}",
+            arguments = listOf(
+                navArgument(name = Constants.PARAM_CHAT_ID) {
+                    type = NavType.StringType
+                    defaultValue = "-1"
+                }
+            )
+        ) {
+            ChatScreen(navController = navController)
         }
     }
 }

@@ -21,6 +21,7 @@ object Constants {
     // Navigation arguments
     const val PARAM_USER_UID = "uid"
     const val PARAM_IMAGE_ID = "id"
+    const val PARAM_CHAT_ID = "id"
 
     // Images in profile selections
     const val SELECT_IMAGES = "images"

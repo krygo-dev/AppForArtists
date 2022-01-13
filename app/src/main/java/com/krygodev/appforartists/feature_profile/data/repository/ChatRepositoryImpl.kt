@@ -44,7 +44,7 @@ class ChatRepositoryImpl(
         }
     }
 
-    override fun getUserChatrooms(uid: String): Flow<Resource<UserModel>> = callbackFlow {
+    override fun getUserChatrooms(uid: String): Flow<Resource<List<ChatroomModel>>> = callbackFlow {
         val subscription = _firebaseFirestore.collection(Constants.USER_COLLECTION)
             .document(uid)
             .addSnapshotListener { snapshot, error ->
@@ -52,7 +52,12 @@ class ChatRepositoryImpl(
                     trySend(Resource.Error(message = it.message!!))
                     return@addSnapshotListener
                 }
-                trySend(Resource.Success(snapshot?.toObject(UserModel::class.java)!!))
+                val result = _firebaseFirestore.collection(Constants.CHATROOMS_COLLECTION)
+                    .whereIn("id", snapshot?.toObject(UserModel::class.java)?.chatrooms!!)
+                    .get()
+                    .result.toObjects(ChatroomModel::class.java)
+
+                trySend(Resource.Success(result))
             }
         awaitClose { subscription.remove() }
     }

@@ -11,7 +11,7 @@ fun SetupBottomNavBar(
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Search,
-        BottomNavItem.Messages,
+        BottomNavItem.Chatrooms,
         BottomNavItem.Profile
     )
 
