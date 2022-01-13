@@ -1,9 +1,6 @@
 package com.krygodev.appforartists.feature_profile.presentation.chat.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -20,21 +17,23 @@ fun ChatBubbleListItem(
     message: MessageModel,
     sentByCurrentUser: Boolean
 ) {
-    Card(
-        modifier = Modifier.padding(4.dp),
-        shape = RoundedCornerShape(30.0f),
-        elevation = 5.dp
+    val alignment = if (sentByCurrentUser) Alignment.End else Alignment.Start
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 2.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = alignment
     ) {
-        val arrangement = if (sentByCurrentUser) Arrangement.End else Arrangement.Start
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = arrangement,
-            verticalAlignment = Alignment.CenterVertically
+        Card(
+            modifier = Modifier.widthIn(max = 300.dp),
+            shape = RoundedCornerShape(30.0f),
+            elevation = 5.dp,
+            backgroundColor = if (sentByCurrentUser) Color.Black else Color.DarkGray
         ) {
             Text(
                 text = "${message.message}",
                 fontSize = 17.sp,
-                color = Color.Black
+                color = Color.White,
+                modifier = Modifier.padding(8.dp)
             )
         }
     }

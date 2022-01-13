@@ -1,6 +1,5 @@
 package com.krygodev.appforartists.feature_profile.presentation.chat
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -122,15 +121,16 @@ fun ChatScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 8.dp)
-                    .padding(top = 8.dp)
+                    .padding(8.dp)
             ) {
                 items(messagesState) { message ->
                     ChatBubbleListItem(
                         message = message,
                         sentByCurrentUser = message.sender == currentUserState
                     )
-                    Log.d("TAG", "$currentUserState : ${message.sender} : ${message.sender == currentUserState}")
+                }
+                item {
+                    Spacer(modifier = Modifier.height(70.dp))
                 }
             }
         }
