@@ -1,23 +1,25 @@
 package com.krygodev.appforartists.feature_profile.presentation.chat
 
-import android.util.Log
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.krygodev.appforartists.core.presentation.components.SetupBottomNavBar
 import com.krygodev.appforartists.core.presentation.util.UIEvent
+import com.krygodev.appforartists.feature_profile.presentation.chat.components.ChatBubbleListItem
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -27,7 +29,8 @@ fun ChatScreen(
 ) {
     val state = viewModel.state.value
     val messagesState = viewModel.messages.value
-    val messageTextState = viewModel.messageText.value
+    val chatroomState = viewModel.chatroom.value
+    val messageState = viewModel.message.value
     val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(key1 = true) {
@@ -48,7 +51,60 @@ fun ChatScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         modifier = Modifier.padding(horizontal = 8.dp),
-        bottomBar = { SetupBottomNavBar(navController = navController) }
+        topBar = {
+            Row(modifier = Modifier.padding(horizontal = 8.dp)) {
+                OutlinedButton(
+                    onClick = {
+                        navController.popBackStack()
+                    },
+                    modifier = Modifier.size(40.dp),
+                    shape = CircleShape,
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = Color.LightGray,
+                        backgroundColor = Color.Black
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = null
+                    )
+                }
+            }
+        },
+        bottomBar = {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .background(Color.White)
+            ) {
+                val focusManager = LocalFocusManager.current
+
+                OutlinedTextField(
+                    value = messageState.message ?: "",
+                    trailingIcon = {
+                        IconButton(
+                            onClick = {
+                                viewModel.onEvent(ChatEvent.SendMessage)
+                                focusManager.clearFocus()
+                            }
+                        ) {
+                            Icon(imageVector = Icons.Filled.Send, contentDescription = null)
+                        }
+                    },
+                    onValueChange = { viewModel.onEvent(ChatEvent.EnteredMessage(it)) },
+                    placeholder = { Text(text = "Wpisz wiadomość") },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Black,
+                        focusedLabelColor = Color.Black,
+                        cursorColor = Color.Black,
+                        trailingIconColor = Color.Black
+                    ),
+                    maxLines = 3,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
     ) {
         if (state.isLoading) {
             Box(
@@ -61,12 +117,17 @@ fun ChatScreen(
                 )
             }
         } else {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp)
             ) {
-                Text(text = "Chat screen")
-                Log.d("TAG", messagesState.toString())
+                items(messagesState) { message ->
+                    ChatBubbleListItem(
+                        message = message,
+                        chatroom = chatroomState
+                    )
+                }
             }
         }
     }

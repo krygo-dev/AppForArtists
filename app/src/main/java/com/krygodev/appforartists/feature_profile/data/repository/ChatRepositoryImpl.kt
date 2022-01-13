@@ -59,8 +59,19 @@ class ChatRepositoryImpl(
                 if (result.documents.size != 0) {
                     emit(Resource.Success(result.documents[0].toObject(ChatroomModel::class.java)!!))
                 } else {
-                    val res = createChatroom(ChatroomModel(id = "-1", uid1 = uid1, uid2 = uid2))
-                    emit(Resource.Success(res))
+                    val result2 = _firebaseFirestore.collection(Constants.CHATROOMS_COLLECTION)
+                        .whereEqualTo("uid1", uid2)
+                        .whereEqualTo("uid2", uid1)
+                        .limit(1)
+                        .get()
+                        .await()
+
+                    if (result2.documents.size != 0) {
+                        emit(Resource.Success(result2.documents[0].toObject(ChatroomModel::class.java)!!))
+                    } else {
+                        val res = createChatroom(ChatroomModel(id = "-1", uid1 = uid1, uid2 = uid2))
+                        emit(Resource.Success(res))
+                    }
                 }
 
             } catch (e: HttpException) {

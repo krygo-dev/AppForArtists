@@ -37,16 +37,17 @@ class ChatViewModel @Inject constructor(
     private val _messages = mutableStateOf(listOf<MessageModel>())
     val messages: State<List<MessageModel>> = _messages
 
-    private val _messageText = mutableStateOf("")
-    val messageText: State<String> = _messageText
+    private val _message = mutableStateOf(MessageModel())
+    val message: State<MessageModel> = _message
 
-    private lateinit var _chatroom: ChatroomModel
+    private val _chatroom = mutableStateOf(ChatroomModel())
+    val chatroom: State<ChatroomModel> = _chatroom
 
     init {
         savedStateHandle.get<String>(Constants.PARAM_CHAT_ID)?.let { id ->
             savedStateHandle.get<String>(Constants.PARAM_USER_UID)?.let { uid ->
                 savedStateHandle.get<String>(Constants.PARAM_SECOND_USER_UID)?.let { uid2 ->
-                    _chatroom = ChatroomModel(id = id, uid1 = uid, uid2 = uid2)
+                    _chatroom.value = ChatroomModel(id = id, uid1 = uid, uid2 = uid2)
                     if (id != "-1") {
                         onEvent(ChatEvent.GetMessages(chatId = id))
                     } else {
@@ -63,44 +64,48 @@ class ChatViewModel @Inject constructor(
         when (event) {
             is ChatEvent.SendMessage -> {
                 viewModelScope.launch {
-                    val message = MessageModel(
+                    _message.value = message.value.copy(
                         id = "-1",
-                        sender = _chatroom.uid1,
-                        receiver = _chatroom.uid2,
-                        message = _messageText.value,
+                        sender = _chatroom.value.uid1,
+                        receiver = _chatroom.value.uid2,
                         time = Timestamp(Date()).toDate().time
                     )
-                    _chatUseCases.sendMessage(chatroom = _chatroom, message = message).onEach { result ->
-                        when (result) {
-                            is Resource.Loading -> {
-                                _state.value = state.value.copy(
-                                    isLoading = true,
-                                    error = "",
-                                    result = null
-                                )
+                    _chatUseCases.sendMessage(chatroom = _chatroom.value, message = message.value)
+                        .onEach { result ->
+                            when (result) {
+                                is Resource.Loading -> {
+                                    _state.value = state.value.copy(
+                                        isLoading = true,
+                                        error = "",
+                                        result = null
+                                    )
+                                }
+                                is Resource.Success -> {
+                                    _state.value = state.value.copy(
+                                        isLoading = false,
+                                        error = "",
+                                        result = result.data
+                                    )
+
+                                    _message.value = message.value.copy(
+                                        message = ""
+                                    )
+                                }
+                                is Resource.Error -> {
+                                    _state.value = state.value.copy(
+                                        isLoading = false,
+                                        error = result.message!!,
+                                        result = null
+                                    )
+                                    _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                                }
                             }
-                            is Resource.Success -> {
-                                _state.value = state.value.copy(
-                                    isLoading = false,
-                                    error = "",
-                                    result = result.data
-                                )
-                            }
-                            is Resource.Error -> {
-                                _state.value = state.value.copy(
-                                    isLoading = false,
-                                    error = result.message!!,
-                                    result = null
-                                )
-                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
-                            }
-                        }
-                    }.launchIn(this)
+                        }.launchIn(this)
                 }
             }
             is ChatEvent.GetMessages -> {
                 viewModelScope.launch {
-                    _chatUseCases.getMessages(chatroom = _chatroom).onEach { result ->
+                    _chatUseCases.getMessages(chatroom = _chatroom.value).onEach { result ->
                         when (result) {
                             is Resource.Loading -> {
                                 _state.value = state.value.copy(
@@ -132,7 +137,10 @@ class ChatViewModel @Inject constructor(
             }
             is ChatEvent.GetChatroom -> {
                 viewModelScope.launch {
-                    _chatUseCases.getChatroomByUsersUid(uid1 = _chatroom.uid1!!, uid2 = _chatroom.uid2!!).onEach { result ->
+                    _chatUseCases.getChatroomByUsersUid(
+                        uid1 = _chatroom.value.uid1!!,
+                        uid2 = _chatroom.value.uid2!!
+                    ).onEach { result ->
                         when (result) {
                             is Resource.Loading -> {
                                 _state.value = state.value.copy(
@@ -148,9 +156,9 @@ class ChatViewModel @Inject constructor(
                                     result = result.data
                                 )
 
-                                _chatroom = result.data!!
+                                _chatroom.value = result.data!!
 
-                                onEvent(ChatEvent.GetMessages(_chatroom.id!!))
+                                onEvent(ChatEvent.GetMessages(_chatroom.value.id!!))
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(
@@ -165,7 +173,9 @@ class ChatViewModel @Inject constructor(
                 }
             }
             is ChatEvent.EnteredMessage -> {
-                _messageText.value = event.message
+                _message.value = message.value.copy(
+                    message = event.message
+                )
             }
         }
     }
