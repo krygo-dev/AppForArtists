@@ -1,4 +1,4 @@
-package com.krygodev.appforartists.feature_profile.domain.use_case
+package com.krygodev.appforartists.feature_profile.domain.use_case.profile
 
 import com.google.firebase.auth.FirebaseUser
 import com.krygodev.appforartists.feature_profile.domain.repository.ProfileRepository

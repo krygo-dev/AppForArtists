@@ -1,4 +1,4 @@
-package com.krygodev.appforartists.feature_image.domain.use_case.image_use_case
+package com.krygodev.appforartists.feature_image.domain.use_case.image
 
 import com.krygodev.appforartists.core.domain.model.ImageModel
 import com.krygodev.appforartists.core.domain.util.Resource

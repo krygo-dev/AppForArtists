@@ -6,6 +6,8 @@ object Constants {
     const val USER_COLLECTION = "Users"
     const val IMAGES_COLLECTION = "Images"
     const val COMMENTS_COLLECTION = "Comments"
+    const val CHATROOMS_COLLECTION = "Chatrooms"
+    const val MESSAGES_COLLECTION = "Messages"
 
     // Storage bucket
     const val IMAGES_BUCKET = "images"

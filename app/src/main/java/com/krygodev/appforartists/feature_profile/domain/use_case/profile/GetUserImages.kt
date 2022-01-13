@@ -1,4 +1,4 @@
-package com.krygodev.appforartists.feature_profile.domain.use_case
+package com.krygodev.appforartists.feature_profile.domain.use_case.profile
 
 import com.krygodev.appforartists.core.domain.model.ImageModel
 import com.krygodev.appforartists.core.domain.model.UserModel
@@ -7,17 +7,17 @@ import com.krygodev.appforartists.feature_profile.domain.repository.ProfileRepos
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class GetUserFavorites(
+class GetUserImages(
     private val _repository: ProfileRepository
 ) {
     operator fun invoke(user: UserModel): Flow<Resource<List<ImageModel>>> {
 
-        if (user.favorites.isEmpty()) {
+        if (user.images.isEmpty()) {
             return flow {
                 emit(Resource.Success(listOf()))
             }
         }
 
-        return _repository.getUserImagesOrFavorites(listOfId = user.favorites)
+        return _repository.getUserImagesOrFavorites(listOfId = user.images)
     }
 }

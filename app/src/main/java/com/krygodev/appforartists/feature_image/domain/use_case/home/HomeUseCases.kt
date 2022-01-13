@@ -1,4 +1,4 @@
-package com.krygodev.appforartists.feature_image.domain.use_case.home_use_case
+package com.krygodev.appforartists.feature_image.domain.use_case.home
 
 data class HomeUseCases(
     val getRandomImage: GetRandomImage,

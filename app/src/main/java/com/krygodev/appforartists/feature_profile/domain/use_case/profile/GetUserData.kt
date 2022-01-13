@@ -1,4 +1,4 @@
-package com.krygodev.appforartists.feature_profile.domain.use_case
+package com.krygodev.appforartists.feature_profile.domain.use_case.profile
 
 import com.krygodev.appforartists.core.domain.model.UserModel
 import com.krygodev.appforartists.core.domain.util.Resource

@@ -10,11 +10,11 @@ import com.krygodev.appforartists.feature_image.data.repository.HomeRepositoryIm
 import com.krygodev.appforartists.feature_image.data.repository.ImageRepositoryImpl
 import com.krygodev.appforartists.feature_image.domain.repository.HomeRepository
 import com.krygodev.appforartists.feature_image.domain.repository.ImageRepository
-import com.krygodev.appforartists.feature_image.domain.use_case.home_use_case.*
-import com.krygodev.appforartists.feature_image.domain.use_case.image_use_case.*
+import com.krygodev.appforartists.feature_image.domain.use_case.home.*
+import com.krygodev.appforartists.feature_image.domain.use_case.image.*
 import com.krygodev.appforartists.feature_profile.data.repository.ProfileRepositoryImpl
 import com.krygodev.appforartists.feature_profile.domain.repository.ProfileRepository
-import com.krygodev.appforartists.feature_profile.domain.use_case.*
+import com.krygodev.appforartists.feature_profile.domain.use_case.profile.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

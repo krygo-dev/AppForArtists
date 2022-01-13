@@ -1,4 +1,4 @@
-package com.krygodev.appforartists.feature_profile.presentation.messages
+package com.krygodev.appforartists.feature_profile.presentation.chat
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

@@ -15,7 +15,7 @@ import com.krygodev.appforartists.feature_image.presentation.home.HomeScreen
 import com.krygodev.appforartists.feature_image.presentation.image_details.ImageDetailsScreen
 import com.krygodev.appforartists.feature_image.presentation.search.SearchScreen
 import com.krygodev.appforartists.feature_profile.presentation.edit_profile.EditProfileScreen
-import com.krygodev.appforartists.feature_profile.presentation.messages.MessagesScreen
+import com.krygodev.appforartists.feature_profile.presentation.chat.MessagesScreen
 import com.krygodev.appforartists.feature_profile.presentation.profile.ProfileScreen
 
 @ExperimentalFoundationApi
