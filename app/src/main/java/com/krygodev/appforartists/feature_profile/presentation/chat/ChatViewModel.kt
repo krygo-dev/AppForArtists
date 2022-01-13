@@ -13,6 +13,7 @@ import com.krygodev.appforartists.core.presentation.util.UIEvent
 import com.krygodev.appforartists.feature_profile.domain.model.ChatroomModel
 import com.krygodev.appforartists.feature_profile.domain.model.MessageModel
 import com.krygodev.appforartists.feature_profile.domain.use_case.chat.ChatUseCases
+import com.krygodev.appforartists.feature_profile.domain.use_case.profile.ProfileUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -24,6 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
+    private val _profileUseCases: ProfileUseCases,
     private val _chatUseCases: ChatUseCases,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -43,6 +45,8 @@ class ChatViewModel @Inject constructor(
     private val _chatroom = mutableStateOf(ChatroomModel())
     val chatroom: State<ChatroomModel> = _chatroom
 
+    var currentUser = mutableStateOf("")
+
     init {
         savedStateHandle.get<String>(Constants.PARAM_CHAT_ID)?.let { id ->
             savedStateHandle.get<String>(Constants.PARAM_USER_UID)?.let { uid ->
@@ -58,6 +62,8 @@ class ChatViewModel @Inject constructor(
                 }
             }
         }
+
+        currentUser.value = _profileUseCases.getCurrentUser()!!.uid
     }
 
     fun onEvent(event: ChatEvent) {
@@ -66,7 +72,7 @@ class ChatViewModel @Inject constructor(
                 viewModelScope.launch {
                     _message.value = message.value.copy(
                         id = "-1",
-                        sender = _chatroom.value.uid1,
+                        sender = currentUser.value,
                         receiver = _chatroom.value.uid2,
                         time = Timestamp(Date()).toDate().time
                     )

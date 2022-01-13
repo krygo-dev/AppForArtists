@@ -1,5 +1,6 @@
 package com.krygodev.appforartists.feature_profile.presentation.chat
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,6 +32,7 @@ fun ChatScreen(
     val messagesState = viewModel.messages.value
     val chatroomState = viewModel.chatroom.value
     val messageState = viewModel.message.value
+    val currentUserState = viewModel.currentUser.value
     val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(key1 = true) {
@@ -121,12 +123,14 @@ fun ChatScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 8.dp)
+                    .padding(top = 8.dp)
             ) {
                 items(messagesState) { message ->
                     ChatBubbleListItem(
                         message = message,
-                        chatroom = chatroomState
+                        sentByCurrentUser = message.sender == currentUserState
                     )
+                    Log.d("TAG", "$currentUserState : ${message.sender} : ${message.sender == currentUserState}")
                 }
             }
         }

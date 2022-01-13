@@ -89,6 +89,7 @@ class ChatRepositoryImpl(
             val subscription = _firebaseFirestore.collection(Constants.CHATROOMS_COLLECTION)
                 .document(chatroom.id!!)
                 .collection(Constants.MESSAGES_COLLECTION)
+                .orderBy("time")
                 .addSnapshotListener { snapshot, error ->
                     error?.let {
                         trySend(Resource.Error(message = it.message!!))
