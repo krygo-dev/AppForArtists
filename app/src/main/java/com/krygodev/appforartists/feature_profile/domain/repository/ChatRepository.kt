@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
 
-    fun createChatroom(chatRoom: ChatroomModel): Flow<Resource<String>>
+    fun createChatroom(chatroom: ChatroomModel): Flow<Resource<String>>
 
     fun getUserChatrooms(uid: String): Flow<Resource<UserModel>>
 
-    fun getMessages(chatRoom: ChatroomModel): Flow<Resource<List<MessageModel>>>
+    fun getMessages(chatroom: ChatroomModel): Flow<Resource<List<MessageModel>>>
 
-    fun sendMessage(chatRoom: ChatroomModel, message: MessageModel): Flow<Resource<Void>>
+    fun sendMessage(chatroom: ChatroomModel, message: MessageModel): Flow<Resource<Void>>
 }

@@ -2,7 +2,7 @@ package com.krygodev.appforartists.feature_image.presentation.util
 
 object ImageTags {
     const val PORTRAIT = "Portret"
-    const val LANDSCAPE = "Pejzarz"
+    const val LANDSCAPE = "Pejzaż"
     const val PHOTOGRAPHY = "Fotografia"
     const val PAINTING = "Malarstwo"
     const val DRAWING = "Rysunek"

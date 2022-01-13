@@ -22,16 +22,16 @@ class ChatRepositoryImpl(
     private val _firebaseFirestore: FirebaseFirestore
 ) : ChatRepository {
 
-    override fun createChatroom(chatRoom: ChatroomModel): Flow<Resource<String>> = flow {
+    override fun createChatroom(chatroom: ChatroomModel): Flow<Resource<String>> = flow {
         emit(Resource.Loading())
 
         try {
             val ref = _firebaseFirestore.collection(Constants.CHATROOMS_COLLECTION)
                 .document()
 
-            chatRoom.id = ref.id
+            chatroom.id = ref.id
 
-            ref.set(chatRoom).await()
+            ref.set(chatroom).await()
 
             emit(Resource.Success(ref.id))
 
@@ -57,10 +57,10 @@ class ChatRepositoryImpl(
         awaitClose { subscription.remove() }
     }
 
-    override fun getMessages(chatRoom: ChatroomModel): Flow<Resource<List<MessageModel>>> =
+    override fun getMessages(chatroom: ChatroomModel): Flow<Resource<List<MessageModel>>> =
         callbackFlow {
             val subscription = _firebaseFirestore.collection(Constants.CHATROOMS_COLLECTION)
-                .document(chatRoom.id)
+                .document(chatroom.id)
                 .collection(Constants.MESSAGES_COLLECTION)
                 .addSnapshotListener { snapshot, error ->
                     error?.let {
@@ -72,12 +72,12 @@ class ChatRepositoryImpl(
             awaitClose { subscription.remove() }
         }
 
-    override fun sendMessage(chatRoom: ChatroomModel, message: MessageModel): Flow<Resource<Void>> = flow {
+    override fun sendMessage(chatroom: ChatroomModel, message: MessageModel): Flow<Resource<Void>> = flow {
         emit(Resource.Loading())
 
         try {
             val ref = _firebaseFirestore.collection(Constants.CHATROOMS_COLLECTION)
-                .document(chatRoom.id)
+                .document(chatroom.id)
                 .collection(Constants.MESSAGES_COLLECTION)
                 .document()
 

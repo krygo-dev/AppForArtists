@@ -12,13 +12,17 @@ import com.krygodev.appforartists.feature_image.domain.repository.HomeRepository
 import com.krygodev.appforartists.feature_image.domain.repository.ImageRepository
 import com.krygodev.appforartists.feature_image.domain.use_case.home.*
 import com.krygodev.appforartists.feature_image.domain.use_case.image.*
+import com.krygodev.appforartists.feature_profile.data.repository.ChatRepositoryImpl
 import com.krygodev.appforartists.feature_profile.data.repository.ProfileRepositoryImpl
+import com.krygodev.appforartists.feature_profile.domain.repository.ChatRepository
 import com.krygodev.appforartists.feature_profile.domain.repository.ProfileRepository
+import com.krygodev.appforartists.feature_profile.domain.use_case.chat.*
 import com.krygodev.appforartists.feature_profile.domain.use_case.profile.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
 
 @Module
@@ -129,6 +133,26 @@ object AppModule {
             getBestRatedImages = GetBestRatedImages(repository),
             getRecentlyAddedImages = GetRecentlyAddedImages(repository),
             getBestRatedUsers = GetBestRatedUsers(repository)
+        )
+    }
+
+    @ExperimentalCoroutinesApi
+    @Provides
+    @Singleton
+    fun provideChatRepository(
+        firebaseFirestore: FirebaseFirestore
+    ): ChatRepository {
+        return ChatRepositoryImpl(firebaseFirestore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideChatUseCases(repository: ChatRepository): ChatUseCases {
+        return ChatUseCases(
+            createChatroom = CreateChatroom(repository),
+            getUserChatrooms = GetUserChatrooms(repository),
+            getMessages = GetMessages(repository),
+            sendMessage = SendMessage(repository)
         )
     }
 }
