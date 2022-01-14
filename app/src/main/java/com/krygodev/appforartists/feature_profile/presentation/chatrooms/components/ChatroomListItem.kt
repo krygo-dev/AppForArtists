@@ -38,6 +38,10 @@ fun ChatroomListItem(
             modifier = Modifier.size(60.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = "${user.username}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Text(
+            text = "${user.username}",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }

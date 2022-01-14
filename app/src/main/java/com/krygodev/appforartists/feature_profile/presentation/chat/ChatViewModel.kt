@@ -44,7 +44,7 @@ class ChatViewModel @Inject constructor(
     val message: State<MessageModel> = _message
 
     private val _chatroom = mutableStateOf(ChatroomModel())
-    val chatroom: State<ChatroomModel> = _chatroom
+    private val chatroom: State<ChatroomModel> = _chatroom
 
     private val _users = mutableStateOf(listOf<UserModel>())
     val users: State<List<UserModel>> = _users

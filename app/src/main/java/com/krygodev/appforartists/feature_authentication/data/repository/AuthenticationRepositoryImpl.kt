@@ -1,6 +1,9 @@
 package com.krygodev.appforartists.feature_authentication.data.repository
 
-import com.google.firebase.auth.*
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
 import com.google.firebase.firestore.FirebaseFirestore
 import com.krygodev.appforartists.core.domain.model.UserModel
@@ -12,11 +15,18 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import java.io.IOException
 
-
 class AuthenticationRepositoryImpl(
     private val _firebaseAuth: FirebaseAuth,
     private val _firebaseFirestore: FirebaseFirestore
 ) : AuthenticationRepository {
+
+    private val errors = mapOf(
+        "ERROR_USER_NOT_FOUND" to "Użytkownik o podanym adresie email nie istnieje.",
+        "ERROR_WRONG_PASSWORD" to "Podane hasło jest nieprawidłowe.",
+        "ERROR_EMAIL_ALREADY_IN_USE" to "Użytkownik o podanym adresie już istnieje. Podaj inny adres email.",
+        "ERROR_WEAK_PASSWORD" to "Podane hasło jest za słabe. Hasło powinno mieć przynajmniej 6 znaków.",
+        "ERROR_INVALID_EMAIL" to "Podany adres email jest źle sformatowany."
+    )
 
     override fun signInWithEmailAndPass(
         email: String,
@@ -38,15 +48,9 @@ class AuthenticationRepositoryImpl(
         } catch (e: IOException) {
             emit(Resource.Error(message = "Nie udało się połączyć z serwerem, sprawdź połączenie z internetem"))
         } catch (e: FirebaseAuthException) {
-            emit(Resource.Error(message = e.localizedMessage!!))
+            emit(Resource.Error(message = errors[e.errorCode]!!))
         }
     }
-
-
-    override fun signInWithGoogle(googleAuthCredential: GoogleAuthCredential): Flow<Resource<AuthResult>> {
-        TODO("Not implemented yet.")
-    }
-
 
     override fun signUpWithEmailAndPass(
         email: String,
@@ -75,7 +79,7 @@ class AuthenticationRepositoryImpl(
         } catch (e: IOException) {
             emit(Resource.Error(message = "Nie udało się połączyć z serwerem, sprawdź połączenie z internetem"))
         } catch (e: FirebaseAuthException) {
-            emit(Resource.Error(message = e.localizedMessage!!))
+            emit(Resource.Error(message = errors[e.errorCode]!!))
         }
     }
 
@@ -91,7 +95,7 @@ class AuthenticationRepositoryImpl(
         } catch (e: IOException) {
             emit(Resource.Error(message = "Nie udało się połączyć z serwerem, sprawdź połączenie z internetem"))
         } catch (e: FirebaseAuthException) {
-            emit(Resource.Error(message = e.localizedMessage!!))
+            emit(Resource.Error(message = errors[e.errorCode]!!))
         }
     }
 
