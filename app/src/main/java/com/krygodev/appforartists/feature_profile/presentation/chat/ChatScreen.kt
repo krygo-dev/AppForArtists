@@ -1,6 +1,8 @@
 package com.krygodev.appforartists.feature_profile.presentation.chat
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,9 +17,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
+import coil.transform.CircleCropTransformation
+import com.krygodev.appforartists.R
+import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
 import com.krygodev.appforartists.feature_profile.presentation.chat.components.ChatBubbleListItem
 import kotlinx.coroutines.flow.collectLatest
@@ -31,6 +39,7 @@ fun ChatScreen(
     val messagesState = viewModel.messages.value
     val chatroomState = viewModel.chatroom.value
     val messageState = viewModel.message.value
+    val usersState = viewModel.users.value
     val currentUserState = viewModel.currentUser.value
     val scaffoldState = rememberScaffoldState()
 
@@ -53,7 +62,12 @@ fun ChatScreen(
         scaffoldState = scaffoldState,
         modifier = Modifier.padding(horizontal = 8.dp),
         topBar = {
-            Row(modifier = Modifier.padding(horizontal = 8.dp)) {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 OutlinedButton(
                     onClick = {
                         navController.popBackStack()
@@ -70,6 +84,32 @@ fun ChatScreen(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = null
                     )
+                }
+                if (usersState.isNotEmpty()) {
+                    val chatWithUser =
+                        if (usersState[0].uid == currentUserState) usersState[1]
+                        else usersState[0]
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable {
+                            navController.navigate(Screen.ProfileScreen.route + "?uid=${chatWithUser.uid}")
+                        }
+                    ) {
+                        Text(text = "${chatWithUser.username}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Image(
+                            painter = rememberImagePainter(
+                                data = if (!chatWithUser.userPhotoUrl.isNullOrEmpty()) chatWithUser.userPhotoUrl
+                                else R.mipmap.ic_default_profile_image,
+                                builder = {
+                                    transformations(CircleCropTransformation())
+                                }
+                            ),
+                            contentDescription = null,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
                 }
             }
         },
@@ -121,16 +161,17 @@ fun ChatScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(8.dp)
+                    .padding(8.dp),
+                reverseLayout = true
             ) {
+                item {
+                    Spacer(modifier = Modifier.height(70.dp))
+                }
                 items(messagesState) { message ->
                     ChatBubbleListItem(
                         message = message,
                         sentByCurrentUser = message.sender == currentUserState
                     )
-                }
-                item {
-                    Spacer(modifier = Modifier.height(70.dp))
                 }
             }
         }

@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
+import com.krygodev.appforartists.core.domain.model.UserModel
 import com.krygodev.appforartists.core.domain.util.Constants
 import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.core.presentation.util.LoadingState
@@ -45,6 +46,9 @@ class ChatViewModel @Inject constructor(
     private val _chatroom = mutableStateOf(ChatroomModel())
     val chatroom: State<ChatroomModel> = _chatroom
 
+    private val _users = mutableStateOf(listOf<UserModel>())
+    val users: State<List<UserModel>> = _users
+
     var currentUser = mutableStateOf("")
 
     init {
@@ -52,6 +56,8 @@ class ChatViewModel @Inject constructor(
             savedStateHandle.get<String>(Constants.PARAM_USER_UID)?.let { uid ->
                 savedStateHandle.get<String>(Constants.PARAM_SECOND_USER_UID)?.let { uid2 ->
                     _chatroom.value = ChatroomModel(id = id, uid1 = uid, uid2 = uid2)
+                    onEvent(ChatEvent.GetUserData(uid = chatroom.value.uid1!!))
+                    onEvent(ChatEvent.GetUserData(uid = chatroom.value.uid2!!))
                     if (id != "-1") {
                         onEvent(ChatEvent.GetMessages(chatId = id))
                     } else {
@@ -182,6 +188,39 @@ class ChatViewModel @Inject constructor(
                 _message.value = message.value.copy(
                     message = event.message
                 )
+            }
+            is ChatEvent.GetUserData -> {
+                viewModelScope.launch {
+                    _profileUseCases.getUserData(uid = event.uid).onEach { result ->
+                        when (result) {
+                            is Resource.Loading -> {
+                                _state.value = state.value.copy(
+                                    isLoading = true,
+                                    error = "",
+                                    result = null
+                                )
+                            }
+                            is Resource.Success -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = "",
+                                    result = result.data
+                                )
+                                _users.value = users.value.toMutableList().also {
+                                    it.add(result.data!!)
+                                }
+                            }
+                            is Resource.Error -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = result.message!!,
+                                    result = null
+                                )
+                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                            }
+                        }
+                    }.launchIn(this)
+                }
             }
         }
     }

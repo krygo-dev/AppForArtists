@@ -3,6 +3,7 @@ package com.krygodev.appforartists.feature_profile.data.repository
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.Query
 import com.krygodev.appforartists.core.domain.model.UserModel
 import com.krygodev.appforartists.core.domain.util.Constants
 import com.krygodev.appforartists.core.domain.util.Resource
@@ -89,7 +90,7 @@ class ChatRepositoryImpl(
             val subscription = _firebaseFirestore.collection(Constants.CHATROOMS_COLLECTION)
                 .document(chatroom.id!!)
                 .collection(Constants.MESSAGES_COLLECTION)
-                .orderBy("time")
+                .orderBy("time", Query.Direction.DESCENDING)
                 .addSnapshotListener { snapshot, error ->
                     error?.let {
                         trySend(Resource.Error(message = it.message!!))
