@@ -170,6 +170,16 @@ class ChatViewModel @Inject constructor(
 
                                 _chatroom.value = result.data!!
 
+                                _users.value[0].chatrooms = users.value[0].chatrooms.toMutableList().also {
+                                    it.add(chatroom.value.id!!)
+                                }
+                                _users.value[1].chatrooms = users.value[1].chatrooms.toMutableList().also {
+                                    it.add(chatroom.value.id!!)
+                                }
+
+                                onEvent(ChatEvent.UpdateUserData(users.value[0]))
+                                onEvent(ChatEvent.UpdateUserData(users.value[1]))
+
                                 onEvent(ChatEvent.GetMessages(_chatroom.value.id!!))
                             }
                             is Resource.Error -> {
@@ -209,6 +219,36 @@ class ChatViewModel @Inject constructor(
                                 _users.value = users.value.toMutableList().also {
                                     it.add(result.data!!)
                                 }
+                            }
+                            is Resource.Error -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = result.message!!,
+                                    result = null
+                                )
+                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                            }
+                        }
+                    }.launchIn(this)
+                }
+            }
+            is ChatEvent.UpdateUserData -> {
+                viewModelScope.launch {
+                    _profileUseCases.setOrUpdateUserData(user = event.user).onEach { result ->
+                        when (result) {
+                            is Resource.Loading -> {
+                                _state.value = state.value.copy(
+                                    isLoading = true,
+                                    error = "",
+                                    result = null
+                                )
+                            }
+                            is Resource.Success -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = "",
+                                    result = result.data
+                                )
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(

@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.krygodev.appforartists.core.domain.model.UserModel
 import com.krygodev.appforartists.core.domain.util.Resource
 import com.krygodev.appforartists.core.presentation.util.LoadingState
 import com.krygodev.appforartists.core.presentation.util.UIEvent
@@ -33,6 +34,9 @@ class ChatroomsViewModel @Inject constructor(
     private val _chatrooms = mutableStateOf(listOf<ChatroomModel>())
     val chatrooms: State<List<ChatroomModel>> = _chatrooms
 
+    private val _users = mutableStateOf(listOf<UserModel>())
+    val users: State<List<UserModel>> = _users
+
     init {
         onEvent(ChatroomsEvent.GetUserChatrooms)
     }
@@ -59,6 +63,44 @@ class ChatroomsViewModel @Inject constructor(
                                 )
 
                                 _chatrooms.value = result.data!!
+
+                                chatrooms.value.forEach { chatroom ->
+                                    val uid = if (chatroom.uid1 == currentUser.uid) chatroom.uid2 else chatroom.uid1
+                                    onEvent(ChatroomsEvent.GetUserData(uid!!))
+                                }
+                            }
+                            is Resource.Error -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = result.message!!,
+                                    result = null
+                                )
+                                _eventFlow.emit(UIEvent.ShowSnackbar(result.message))
+                            }
+                        }
+                    }.launchIn(this)
+                }
+            }
+            is ChatroomsEvent.GetUserData -> {
+                viewModelScope.launch {
+                    _profileUseCases.getUserData(uid = event.uid).onEach { result ->
+                        when (result) {
+                            is Resource.Loading -> {
+                                _state.value = state.value.copy(
+                                    isLoading = true,
+                                    error = "",
+                                    result = null
+                                )
+                            }
+                            is Resource.Success -> {
+                                _state.value = state.value.copy(
+                                    isLoading = false,
+                                    error = "",
+                                    result = result.data
+                                )
+                                _users.value = users.value.toMutableList().also {
+                                    it.add(result.data!!)
+                                }
                             }
                             is Resource.Error -> {
                                 _state.value = state.value.copy(

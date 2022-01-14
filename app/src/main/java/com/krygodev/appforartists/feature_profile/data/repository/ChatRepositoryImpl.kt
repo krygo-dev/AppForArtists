@@ -23,26 +23,31 @@ class ChatRepositoryImpl(
     private val _firebaseFirestore: FirebaseFirestore
 ) : ChatRepository {
 
-    override fun getUserChatrooms(uid: String): Flow<Resource<List<ChatroomModel>>> = callbackFlow {
-        val subscription = _firebaseFirestore.collection(Constants.USER_COLLECTION)
-            .document(uid)
-            .addSnapshotListener { snapshot, error ->
-                error?.let {
-                    trySend(Resource.Error(message = it.message!!))
-                    return@addSnapshotListener
-                }
-                val userChatrooms = snapshot?.toObject(UserModel::class.java)?.chatrooms
+    override fun getUserChatrooms(uid: String): Flow<Resource<List<ChatroomModel>>> = flow {
+        emit(Resource.Loading())
 
-                if (userChatrooms!!.isNotEmpty()) {
-                    val result = _firebaseFirestore.collection(Constants.CHATROOMS_COLLECTION)
-                        .whereIn("id", userChatrooms)
+        try {
+            val result = getUserData(uid).let {
+                if (it.chatrooms.isEmpty()) {
+                    listOf<ChatroomModel>()
+                } else {
+                    _firebaseFirestore.collection(Constants.CHATROOMS_COLLECTION)
+                        .whereIn("id", it.chatrooms)
                         .get()
-                        .result.toObjects(ChatroomModel::class.java)
-
-                    trySend(Resource.Success(result))
+                        .await()
+                        .toObjects(ChatroomModel::class.java)
                 }
             }
-        awaitClose { subscription.remove() }
+
+            emit(Resource.Success(result))
+
+        } catch (e: HttpException) {
+            emit(Resource.Error(message = "Coś poszło nie tak!"))
+        } catch (e: IOException) {
+            emit(Resource.Error(message = "Nie udało się połączyć z serwerem, sprawdź połączenie z internetem"))
+        } catch (e: FirebaseFirestoreException) {
+            emit(Resource.Error(message = e.localizedMessage!!))
+        }
     }
 
     override fun getChatroomByUsersUid(uid1: String, uid2: String): Flow<Resource<ChatroomModel>> =
@@ -136,5 +141,13 @@ class ChatRepositoryImpl(
         ref.set(chatroom).await()
 
         return ref.get().await().toObject(ChatroomModel::class.java)!!
+    }
+
+    private suspend fun getUserData(uid: String): UserModel {
+        return _firebaseFirestore.collection(Constants.USER_COLLECTION)
+            .document(uid)
+            .get()
+            .await()
+            .toObject(UserModel::class.java)!!
     }
 }

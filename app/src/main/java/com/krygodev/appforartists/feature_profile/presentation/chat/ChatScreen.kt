@@ -37,7 +37,6 @@ fun ChatScreen(
 ) {
     val state = viewModel.state.value
     val messagesState = viewModel.messages.value
-    val chatroomState = viewModel.chatroom.value
     val messageState = viewModel.message.value
     val usersState = viewModel.users.value
     val currentUserState = viewModel.currentUser.value

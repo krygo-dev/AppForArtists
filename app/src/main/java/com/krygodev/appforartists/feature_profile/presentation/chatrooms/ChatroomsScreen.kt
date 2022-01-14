@@ -1,12 +1,9 @@
 package com.krygodev.appforartists.feature_profile.presentation.chatrooms
 
-import android.util.Log
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,7 +14,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.krygodev.appforartists.core.presentation.components.SetupBottomNavBar
+import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
+import com.krygodev.appforartists.feature_profile.presentation.chatrooms.components.ChatroomListItem
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -27,6 +26,7 @@ fun ChatroomsScreen(
 ) {
     val state = viewModel.state.value
     val chatroomsState = viewModel.chatrooms.value
+    val usersState = viewModel.users.value
     val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(key1 = true) {
@@ -64,8 +64,30 @@ fun ChatroomsScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "Chatrooms screen")
-                Log.d("TAG", chatroomsState.toString())
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                ) {
+                    chatroomsState.forEachIndexed { index, chatroom ->
+                        item {
+                            ChatroomListItem(
+                                user = usersState[index],
+                                onCLick = {
+                                    navController.navigate(
+                                        Screen.ChatScreen.route + "/${chatroom.id}/${chatroom.uid1}/${chatroom.uid2}"
+                                    )
+                                }
+                            )
+                        }
+                    }
+//                    items(chatroomsState) { chatroom ->
+//                        ChatroomListItem(chatroom = chatroom, user = usersState.)
+//                    }
+                    item {
+                        Spacer(modifier = Modifier.height(70.dp))
+                    }
+                }
             }
         }
     }
