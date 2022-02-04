@@ -58,7 +58,9 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthenticationUseCases(repository: AuthenticationRepository): AuthenticationUseCases {
+    fun provideAuthenticationUseCases(
+        repository: AuthenticationRepository
+    ): AuthenticationUseCases {
         return AuthenticationUseCases(
             signInWithEmailAndPassword = SignInWithEmailAndPassword(repository),
             signInWithGoogle = SignInWithGoogle(repository),

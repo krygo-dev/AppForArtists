@@ -215,32 +215,34 @@ fun ProfileScreen(
                     }
                 }
                 item {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        OutlinedButton(
-                            onClick = {
-                                navController.navigate(Screen.ChatScreen.route + "/-1/$currentUser/${userState.uid}")
-                            },
-                            shape = RoundedCornerShape(50.dp),
-                            border = BorderStroke(2.dp, Color.Black),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = Color.LightGray,
-                                backgroundColor = Color.Black
-                            )
+                    if (userState.uid != currentUser) {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.width(150.dp)
+                            OutlinedButton(
+                                onClick = {
+                                    navController.navigate(Screen.ChatScreen.route + "/-1/$currentUser/${userState.uid}")
+                                },
+                                shape = RoundedCornerShape(50.dp),
+                                border = BorderStroke(2.dp, Color.Black),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = Color.LightGray,
+                                    backgroundColor = Color.Black
+                                )
                             ) {
-                                Text(text = "Wyślij wiadomość", fontSize = 13.sp)
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceEvenly,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.width(150.dp)
+                                ) {
+                                    Text(text = "Wyślij wiadomość", fontSize = 13.sp)
+                                }
                             }
                         }
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
                 }
                 item {
                     if (!userState.bio.isNullOrEmpty()) {

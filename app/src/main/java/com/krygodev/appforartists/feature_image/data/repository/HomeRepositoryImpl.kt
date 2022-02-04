@@ -29,9 +29,11 @@ class HomeRepositoryImpl(
                 .await()
                 .toObjects(ImageModel::class.java)
 
-            val index = Random.nextInt(0 until result.size)
+            if (result.size > 0) {
+                val index = Random.nextInt(0 until result.size)
 
-            emit(Resource.Success(result[index]!!))
+                emit(Resource.Success(result[index]!!))
+            }
 
         } catch (e: HttpException) {
             emit(Resource.Error(message = "Coś poszło nie tak!"))

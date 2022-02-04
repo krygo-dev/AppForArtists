@@ -3,8 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/adamc/AndroidStudioProjects/AppForArtists/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.24814814814814815" />
         <entry key="..\:/Users/adamc/AndroidStudioProjects/AppForArtists/app/src/main/res/drawable/ic_default_profile_image_foreground.xml" value="0.2490740740740741" />
+        <entry key="..\:/Users/adamc/AndroidStudioProjects/AppForArtists/app/src/main/res/drawable/ic_launcher_background.xml" value="0.24814814814814815" />
         <entry key="..\:/Users/adamc/AndroidStudioProjects/AppForArtists/app/src/main/res/mipmap-anydpi-v26/ic_default_profile_image.xml" value="0.2490740740740741" />
+        <entry key="..\:/Users/adamc/AndroidStudioProjects/AppForArtists/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.24814814814814815" />
+        <entry key="..\:/Users/adamc/AndroidStudioProjects/AppForArtists/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.24814814814814815" />
       </map>
     </option>
   </component>
