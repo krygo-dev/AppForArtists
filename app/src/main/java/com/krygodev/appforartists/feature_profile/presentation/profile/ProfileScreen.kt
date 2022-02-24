@@ -30,6 +30,7 @@ import com.krygodev.appforartists.core.presentation.components.SetupBottomNavBar
 import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
 import kotlinx.coroutines.flow.collectLatest
+import kotlin.math.roundToInt
 
 @Composable
 fun ProfileScreen(
@@ -205,7 +206,7 @@ fun ProfileScreen(
                                 )
                                 Spacer(modifier = Modifier.width(2.dp))
                                 Text(
-                                    text = "${userState.starsAvg}",
+                                    text = "${(userState.starsAvg * 100).roundToInt() / 100.0f}",
                                     fontWeight = FontWeight.Bold,
                                     color = Color.Black
                                 )

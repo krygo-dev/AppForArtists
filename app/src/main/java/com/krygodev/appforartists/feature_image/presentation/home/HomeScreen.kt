@@ -28,6 +28,7 @@ import com.krygodev.appforartists.core.presentation.util.UIEvent
 import com.krygodev.appforartists.feature_image.presentation.home.components.ImageRowItem
 import com.krygodev.appforartists.feature_image.presentation.home.components.ProfileRowItem
 import kotlinx.coroutines.flow.collectLatest
+import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
@@ -136,7 +137,7 @@ fun HomeScreen(
                             )
                             Spacer(modifier = Modifier.width(2.dp))
                             Text(
-                                text = "${dailyImageState.starsAvg}",
+                                text = "${(dailyImageState.starsAvg * 100).roundToInt() / 100.0f}",
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Black
                             )
