@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.krygodev.appforartists.core.domain.model.UserModel
 import com.krygodev.appforartists.core.presentation.components.SetupBottomNavBar
 import com.krygodev.appforartists.core.presentation.util.Screen
 import com.krygodev.appforartists.core.presentation.util.UIEvent
@@ -69,16 +70,25 @@ fun ChatroomsScreen(
                         .fillMaxSize()
                         .padding(8.dp)
                 ) {
-                    chatroomsState.forEachIndexed { index, chatroom ->
-                        item {
-                            ChatroomListItem(
-                                user = usersState[index],
-                                onCLick = {
-                                    navController.navigate(
-                                        Screen.ChatScreen.route + "/${chatroom.id}/${chatroom.uid1}/${chatroom.uid2}"
-                                    )
+                    if (chatroomsState.size == usersState.size) {
+                        chatroomsState.forEach { chatroom ->
+                            var userToShow = UserModel()
+                            for (user in usersState) {
+                                if (user.chatrooms.contains(chatroom.id)) {
+                                    userToShow = user
+                                    break
                                 }
-                            )
+                            }
+                            item {
+                                ChatroomListItem(
+                                    user = userToShow,
+                                    onCLick = {
+                                        navController.navigate(
+                                            Screen.ChatScreen.route + "/${chatroom.id}/${chatroom.uid1}/${chatroom.uid2}"
+                                        )
+                                    }
+                                )
+                            }
                         }
                     }
 //                    items(chatroomsState) { chatroom ->
